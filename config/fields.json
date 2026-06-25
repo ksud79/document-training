@@ -1,0 +1,184 @@
+{
+  "model_id": "smsf-annual-return-2024",
+  "description": "Fields for the ATO SMSF Annual Return 2024 (NAT 71226)",
+  "sections": {
+    "A_fund_information": {
+      "description": "Section A: Fund information",
+      "fields": [
+        { "pdf_field": "tfn",       "name": "TFN",       "description": "Tax file number of the fund",  "type": "string", "page": 1 },
+        { "pdf_field": "smsf-name", "name": "FundName",  "description": "Name of the SMSF",             "type": "string", "page": 1 },
+        { "pdf_field": "abn",       "name": "ABN",       "description": "Australian Business Number",   "type": "string", "page": 1 }
+      ]
+    },
+    "B_electronic_funds_transfer": {
+      "description": "Section B: Electronic funds transfer and audit",
+      "fields": [
+        { "pdf_field": "ss-bsb",          "name": "SuperBSB",          "description": "Super/contributions BSB",                      "type": "string",      "page": 2 },
+        { "pdf_field": "ss-acc",          "name": "SuperAccount",      "description": "Super account number",                         "type": "string",      "page": 2 },
+        { "pdf_field": "ss-acc-name",     "name": "SuperAccountName",  "description": "Super account name",                          "type": "string",      "page": 2 },
+        { "pdf_field": "ref-bsb",         "name": "RefundBSB",         "description": "Refund BSB",                                   "type": "string",      "page": 2 },
+        { "pdf_field": "ref-acc",         "name": "RefundAccount",     "description": "Refund account number",                        "type": "string",      "page": 2 },
+        { "pdf_field": "ref-acc-name",    "name": "RefundAccountName", "description": "Refund account name",                         "type": "string",      "page": 2 },
+        { "pdf_field": "esa",             "name": "ESA",               "description": "Electronic service address alias",            "type": "string",      "page": 2 },
+        { "pdf_field": "aud-parta-qual",  "name": "AuditPartAQual",   "description": "Audit Part A qualified (Yes/No)",              "type": "radioButton", "page": 2, "options": ["No", "Yes"] },
+        { "pdf_field": "aud-partb-qual",  "name": "AuditPartBQual",   "description": "Audit Part B qualified (Yes/No)",              "type": "radioButton", "page": 2, "options": ["No", "Yes"] },
+        { "pdf_field": "aud-partb-qual-yes", "name": "AuditPartBRectified", "description": "Part B issues rectified (Yes/No)",       "type": "radioButton", "page": 2, "options": ["No", "Yes"] }
+      ]
+    },
+    "C_ecpi": {
+      "description": "Section C: Exempt current pension income",
+      "fields": [
+        { "pdf_field": "ecpi-yes/no",      "name": "ECPIPaid",       "description": "Did fund pay retirement phase benefits (Yes/No)", "type": "radioButton", "page": 3, "options": ["No", "Yes"] },
+        { "pdf_field": "ECPI",             "name": "ECPIAmount",     "description": "Exempt current pension income amount",            "type": "currency",    "page": 3 },
+        { "pdf_field": "ecpi-other-asses", "name": "ECPIOtherIncome","description": "Did fund have other assessable income (Yes/No)",  "type": "radioButton", "page": 3, "options": ["No", "Yes"] },
+        { "pdf_field": "pension-method",   "name": "PensionMethod",  "description": "Pension method: segregated vs unsegregated",     "type": "radioButton", "page": 3, "options": ["Segregated", "Unsegregated"] },
+        { "pdf_field": "act-cert",         "name": "ActuarialCert",  "description": "Actuarial certificate obtained (Yes/No)",        "type": "radioButton", "page": 3, "options": ["No", "Yes"] }
+      ]
+    },
+    "J_deductions": {
+      "description": "Section J: Deductions",
+      "fields": [
+        { "pdf_field": "j1-admin-exp", "name": "AdminExpDeductible",    "description": "Management/administration expenses (deductible)",     "type": "currency", "page": 5 },
+        { "pdf_field": "j2-admin-exp", "name": "AdminExpNonDeductible", "description": "Management/administration expenses (non-deductible)", "type": "currency", "page": 5 }
+      ]
+    },
+    "U_losses": {
+      "description": "Section U/V: Losses carried forward",
+      "fields": [
+        { "pdf_field": "cfl-tax", "name": "TaxLossesCarriedForward", "description": "Tax losses carried forward to later income year",            "type": "currency", "page": 7 },
+        { "pdf_field": "cfl-cg",  "name": "CGLossesCarriedForward",  "description": "Net capital losses carried forward to later income year",    "type": "currency", "page": 7 }
+      ]
+    },
+    "F_member_information": {
+      "description": "Section F: Member information — fields repeat for members 1–6 (pages 8–13). Member 1 uses mem1-ncsbis for the retirement non-CDBIS field; members 2–6 use memN-ncdbis.",
+      "fields": [
+        { "pdf_field": "mem1-ls",     "name": "Mem1LumpSum",        "description": "Member 1 lump sum payments",                        "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-is",     "name": "Mem1IncomeStream",   "description": "Member 1 income stream payments",                   "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-acc",    "name": "Mem1AccumBalance",   "description": "Member 1 accumulation phase account balance (S1)",  "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-ncsbis", "name": "Mem1RetNonCDBIS",   "description": "Member 1 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-cdbis",  "name": "Mem1RetCDBIS",      "description": "Member 1 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-tris",   "name": "Mem1TRISCount",     "description": "Member 1 TRIS count",                               "type": "integer",  "page": 8 },
+        { "pdf_field": "mem1-bal",    "name": "Mem1ClosingBalance", "description": "Member 1 closing account balance (S)",             "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-accbal", "name": "Mem1AccumValue",    "description": "Member 1 accumulation phase value (X1)",           "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-retbal", "name": "Mem1RetValue",      "description": "Member 1 retirement phase value (X2)",             "type": "currency", "page": 8 },
+        { "pdf_field": "mem1-lrba",   "name": "Mem1LRBA",          "description": "Member 1 outstanding LRBA amount (Y)",             "type": "currency", "page": 8 },
+        { "pdf_field": "mem2-ls",     "name": "Mem2LumpSum",        "description": "Member 2 lump sum payments",                        "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-is",     "name": "Mem2IncomeStream",   "description": "Member 2 income stream payments",                   "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-acc",    "name": "Mem2AccumBalance",   "description": "Member 2 accumulation phase account balance (S1)",  "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-ncdbis", "name": "Mem2RetNonCDBIS",   "description": "Member 2 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-cdbis",  "name": "Mem2RetCDBIS",      "description": "Member 2 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-tris",   "name": "Mem2TRISCount",     "description": "Member 2 TRIS count",                               "type": "integer",  "page": 9 },
+        { "pdf_field": "mem2-bal",    "name": "Mem2ClosingBalance", "description": "Member 2 closing account balance (S)",             "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-accbal", "name": "Mem2AccumValue",    "description": "Member 2 accumulation phase value (X1)",           "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-retbal", "name": "Mem2RetValue",      "description": "Member 2 retirement phase value (X2)",             "type": "currency", "page": 9 },
+        { "pdf_field": "mem2-lrba",   "name": "Mem2LRBA",          "description": "Member 2 outstanding LRBA amount (Y)",             "type": "currency", "page": 9 },
+        { "pdf_field": "mem3-ls",     "name": "Mem3LumpSum",        "description": "Member 3 lump sum payments",                        "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-is",     "name": "Mem3IncomeStream",   "description": "Member 3 income stream payments",                   "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-acc",    "name": "Mem3AccumBalance",   "description": "Member 3 accumulation phase account balance (S1)",  "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-ncdbis", "name": "Mem3RetNonCDBIS",   "description": "Member 3 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-cdbis",  "name": "Mem3RetCDBIS",      "description": "Member 3 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-tris",   "name": "Mem3TRISCount",     "description": "Member 3 TRIS count",                               "type": "integer",  "page": 10 },
+        { "pdf_field": "mem3-bal",    "name": "Mem3ClosingBalance", "description": "Member 3 closing account balance (S)",             "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-accbal", "name": "Mem3AccumValue",    "description": "Member 3 accumulation phase value (X1)",           "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-retbal", "name": "Mem3RetValue",      "description": "Member 3 retirement phase value (X2)",             "type": "currency", "page": 10 },
+        { "pdf_field": "mem3-lrba",   "name": "Mem3LRBA",          "description": "Member 3 outstanding LRBA amount (Y)",             "type": "currency", "page": 10 },
+        { "pdf_field": "mem4-ls",     "name": "Mem4LumpSum",        "description": "Member 4 lump sum payments",                        "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-is",     "name": "Mem4IncomeStream",   "description": "Member 4 income stream payments",                   "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-acc",    "name": "Mem4AccumBalance",   "description": "Member 4 accumulation phase account balance (S1)",  "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-ncdbis", "name": "Mem4RetNonCDBIS",   "description": "Member 4 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-cdbis",  "name": "Mem4RetCDBIS",      "description": "Member 4 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-tris",   "name": "Mem4TRISCount",     "description": "Member 4 TRIS count",                               "type": "integer",  "page": 11 },
+        { "pdf_field": "mem4-bal",    "name": "Mem4ClosingBalance", "description": "Member 4 closing account balance (S)",             "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-accbal", "name": "Mem4AccumValue",    "description": "Member 4 accumulation phase value (X1)",           "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-retbal", "name": "Mem4RetValue",      "description": "Member 4 retirement phase value (X2)",             "type": "currency", "page": 11 },
+        { "pdf_field": "mem4-lrba",   "name": "Mem4LRBA",          "description": "Member 4 outstanding LRBA amount (Y)",             "type": "currency", "page": 11 },
+        { "pdf_field": "mem5-ls",     "name": "Mem5LumpSum",        "description": "Member 5 lump sum payments",                        "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-is",     "name": "Mem5IncomeStream",   "description": "Member 5 income stream payments",                   "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-acc",    "name": "Mem5AccumBalance",   "description": "Member 5 accumulation phase account balance (S1)",  "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-ncdbis", "name": "Mem5RetNonCDBIS",   "description": "Member 5 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-cdbis",  "name": "Mem5RetCDBIS",      "description": "Member 5 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-tris",   "name": "Mem5TRISCount",     "description": "Member 5 TRIS count",                               "type": "integer",  "page": 12 },
+        { "pdf_field": "mem5-bal",    "name": "Mem5ClosingBalance", "description": "Member 5 closing account balance (S)",             "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-accbal", "name": "Mem5AccumValue",    "description": "Member 5 accumulation phase value (X1)",           "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-retbal", "name": "Mem5RetValue",      "description": "Member 5 retirement phase value (X2)",             "type": "currency", "page": 12 },
+        { "pdf_field": "mem5-lrba",   "name": "Mem5LRBA",          "description": "Member 5 outstanding LRBA amount (Y)",             "type": "currency", "page": 12 },
+        { "pdf_field": "mem6-ls",     "name": "Mem6LumpSum",        "description": "Member 6 lump sum payments",                        "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-is",     "name": "Mem6IncomeStream",   "description": "Member 6 income stream payments",                   "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-acc",    "name": "Mem6AccumBalance",   "description": "Member 6 accumulation phase account balance (S1)",  "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-ncdbis", "name": "Mem6RetNonCDBIS",   "description": "Member 6 retirement phase non-CDBIS balance (S2)",  "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-cdbis",  "name": "Mem6RetCDBIS",      "description": "Member 6 retirement phase CDBIS balance (S3)",      "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-tris",   "name": "Mem6TRISCount",     "description": "Member 6 TRIS count",                               "type": "integer",  "page": 13 },
+        { "pdf_field": "mem6-bal",    "name": "Mem6ClosingBalance", "description": "Member 6 closing account balance (S)",             "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-accbal", "name": "Mem6AccumValue",    "description": "Member 6 accumulation phase value (X1)",           "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-retbal", "name": "Mem6RetValue",      "description": "Member 6 retirement phase value (X2)",             "type": "currency", "page": 13 },
+        { "pdf_field": "mem6-lrba",   "name": "Mem6LRBA",          "description": "Member 6 outstanding LRBA amount (Y)",             "type": "currency", "page": 13 }
+      ]
+    },
+    "H_assets": {
+      "description": "Section H: Assets (page 20)",
+      "fields": [
+        { "pdf_field": "15a-a",  "name": "ListedTrusts",          "description": "Listed trusts",                             "type": "currency", "page": 20 },
+        { "pdf_field": "15a-b",  "name": "UnlistedTrusts",        "description": "Unlisted trusts",                           "type": "currency", "page": 20 },
+        { "pdf_field": "15a-c",  "name": "InsurancePolicy",       "description": "Insurance policy",                         "type": "currency", "page": 20 },
+        { "pdf_field": "15a-d",  "name": "OtherManagedInvestments","description": "Other managed investments",               "type": "currency", "page": 20 },
+        { "pdf_field": "15b-e",  "name": "CashTermDeposits",      "description": "Cash and term deposits",                    "type": "currency", "page": 20 },
+        { "pdf_field": "15b-f",  "name": "AustralianShares",      "description": "Australian shares",                        "type": "currency", "page": 20 },
+        { "pdf_field": "15b-g",  "name": "ResidentialRealProperty","description": "Residential real property",               "type": "currency", "page": 20 },
+        { "pdf_field": "15b-h",  "name": "NonResRealProperty",    "description": "Non-residential real property",            "type": "currency", "page": 20 },
+        { "pdf_field": "15b-i",  "name": "CryptoAssets",          "description": "Crypto assets",                            "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j1", "name": "DirectInvest1",         "description": "Direct investment subcategory 1",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j2", "name": "DirectInvest2",         "description": "Direct investment subcategory 2",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-js", "name": "DirectInvest3",         "description": "Direct investment subcategory 3",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j4", "name": "DirectInvest4",         "description": "Direct investment subcategory 4",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j5", "name": "DirectInvest5",         "description": "Direct investment subcategory 5",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j6", "name": "DirectInvest6",         "description": "Direct investment subcategory 6",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j7", "name": "DirectInvest7",         "description": "Direct investment subcategory 7",          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-j",  "name": "ListedShares",          "description": "Listed shares",                            "type": "currency", "page": 20 },
+        { "pdf_field": "15b-k",  "name": "UnlistedShares",        "description": "Unlisted shares",                          "type": "currency", "page": 20 },
+        { "pdf_field": "15b-l",  "name": "LRBAAssets",            "description": "LRBA assets",                              "type": "currency", "page": 20 },
+        { "pdf_field": "15b-m",  "name": "NonResProperty",        "description": "Non-residential property",                 "type": "currency", "page": 20 },
+        { "pdf_field": "15b-0",  "name": "ResProperty",           "description": "Residential property",                    "type": "currency", "page": 20 },
+        { "pdf_field": "15c-n",  "name": "CryptoAssetsC",         "description": "Crypto assets (section C)",                "type": "currency", "page": 20 },
+        { "pdf_field": "Text34", "name": "OverseasInvest1",       "description": "Overseas investment field 1",              "type": "currency", "page": 20 },
+        { "pdf_field": "Text35", "name": "OverseasInvest2",       "description": "Overseas investment field 2",              "type": "currency", "page": 20 },
+        { "pdf_field": "Text36", "name": "OverseasInvest3",       "description": "Overseas investment field 3",              "type": "currency", "page": 20 },
+        { "pdf_field": "Text37", "name": "OverseasInvest4",       "description": "Overseas investment field 4",              "type": "currency", "page": 20 },
+        { "pdf_field": "Text38", "name": "OverseasInvest5",       "description": "Overseas investment field 5",              "type": "currency", "page": 20 },
+        { "pdf_field": "Text39", "name": "OverseasInvest6",       "description": "Overseas investment field 6",              "type": "currency", "page": 20 },
+        { "pdf_field": "15e",    "name": "InHouseAssets",         "description": "In-house assets",                          "type": "currency", "page": 20 }
+      ]
+    },
+    "I_liabilities": {
+      "description": "Section I: Liabilities (page 21)",
+      "fields": [
+        { "pdf_field": "16-v1", "name": "LiabilityV1",            "description": "Liability subcategory 1",                  "type": "currency", "page": 21 },
+        { "pdf_field": "16-v2", "name": "LiabilityV2",            "description": "Liability subcategory 2",                  "type": "currency", "page": 21 },
+        { "pdf_field": "16-v3", "name": "LiabilityV3",            "description": "Liability subcategory 3",                  "type": "currency", "page": 21 },
+        { "pdf_field": "16v",   "name": "TotalLiabilities",       "description": "Total liabilities",                        "type": "currency", "page": 21 },
+        { "pdf_field": "16w",   "name": "TotalMemberBalance",     "description": "Total member closing balances",            "type": "currency", "page": 21 },
+        { "pdf_field": "16x",   "name": "ReserveAccounts",        "description": "Reserve accounts",                         "type": "currency", "page": 21 },
+        { "pdf_field": "16y",   "name": "OtherLiabilities",       "description": "Other liabilities",                        "type": "currency", "page": 21 },
+        { "pdf_field": "16z",   "name": "AdditionalLiability",    "description": "Additional liability field",               "type": "currency", "page": 21 }
+      ]
+    },
+    "K_declarations": {
+      "description": "Section K: Declarations (page 22)",
+      "fields": [
+        { "pdf_field": "trustee-family-name",    "name": "TrusteeFamilyName",    "description": "Trustee family name",                  "type": "string", "page": 22 },
+        { "pdf_field": "trustee-first-name",     "name": "TrusteeFirstName",     "description": "Trustee first name",                   "type": "string", "page": 22 },
+        { "pdf_field": "trustee-other-name",     "name": "TrusteeOtherName",     "description": "Trustee other given names",            "type": "string", "page": 22 },
+        { "pdf_field": "trustee-phone",          "name": "TrusteePhone",         "description": "Trustee contact phone number",         "type": "string", "page": 22 },
+        { "pdf_field": "trustee-email",          "name": "TrusteeEmail",         "description": "Trustee contact email address",        "type": "string", "page": 22 },
+        { "pdf_field": "trustee-corporate",      "name": "CorporateTrusteeName", "description": "Corporate trustee company name",       "type": "string", "page": 22 },
+        { "pdf_field": "trustee-corp-abn",       "name": "CorporateTrusteeABN",  "description": "Corporate trustee ABN",               "type": "string", "page": 22 },
+        { "pdf_field": "tax-agent-family-name",  "name": "AgentFamilyName",      "description": "Tax agent family name",                "type": "string", "page": 22 },
+        { "pdf_field": "tax-agent-first-name",   "name": "AgentFirstName",       "description": "Tax agent first name",                 "type": "string", "page": 22 },
+        { "pdf_field": "tax-agent-other-name",   "name": "AgentOtherName",       "description": "Tax agent other given names",          "type": "string", "page": 22 },
+        { "pdf_field": "Tax agents practice",    "name": "AgentPractice",        "description": "Tax agent's practice name",            "type": "string", "page": 22 },
+        { "pdf_field": "tan-phone",              "name": "AgentPhone",           "description": "Tax agent phone number",               "type": "string", "page": 22 },
+        { "pdf_field": "tan-ref",                "name": "AgentRefNumber",       "description": "Tax agent reference number",           "type": "string", "page": 22 },
+        { "pdf_field": "tan",                    "name": "TAN",                  "description": "Tax agent number",                    "type": "string", "page": 22 }
+      ]
+    }
+  }
+}

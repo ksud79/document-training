@@ -1,0 +1,8 @@
+.env
+output/*.pdf
+output/test_result.json
+output/model_id.txt
+__pycache__/
+*.pyc
+.venv/
+venv/

@@ -73,26 +73,30 @@ def rand_fund_name(last1, last2=None):
     return f"{last1} Family {random.choice(suffixes)}"
 
 # ── PDF field helpers ─────────────────────────────────────────────────────────
-def set_text(page, field_name, value):
-    """Set a text field value, left-aligned (for names, addresses etc.)."""
+def set_field(page, field_name, value, align=0):
+    """
+    Set a widget field value and alignment.
+    align: 0=left, 1=centre, 2=right
+    Works by iterating widgets and setting both field_value and text_align,
+    then calling update() to flush the change into the page's /AcroForm stream.
+    """
     for widget in page.widgets():
         if widget.field_name == field_name:
             widget.field_value = str(value)
-            widget.text_align = 0  # left
+            widget.text_align = align
             widget.update()
             return
+
+def set_text(page, field_name, value):
+    """Left-aligned text field (names, addresses, fund name, email, ESA)."""
+    set_field(page, field_name, value, align=0)
 
 def set_number(page, field_name, value):
-    """Set a field value, right-aligned (for all numbers and dollar amounts)."""
-    for widget in page.widgets():
-        if widget.field_name == field_name:
-            widget.field_value = str(value)
-            widget.text_align = 2  # right
-            widget.update()
-            return
+    """Right-aligned numeric/dollar field."""
+    set_field(page, field_name, value, align=2)
 
 def set_radio(page, field_name, option_index):
-    """Select a radio button by option index (0 = first widget, 1 = second widget)."""
+    """Select a radio button by option index (0 = first widget, 1 = second)."""
     matches = [w for w in page.widgets() if w.field_name == field_name]
     for i, widget in enumerate(matches):
         widget.field_value = (i == option_index)
@@ -100,7 +104,8 @@ def set_radio(page, field_name, option_index):
 
 # ── member field filler ───────────────────────────────────────────────────────
 def fill_member(page, n):
-    """Fill fields for member N (1-based) on the given page."""
+    """Fill all fields for member N (1-based) on the given page."""
+    # Note: member 1 uses 'mem1-ncsbis', members 2-6 use 'memN-ncdbis'
     ncdbis_field = 'mem1-ncsbis' if n == 1 else f'mem{n}-ncdbis'
 
     set_number(page, f'mem{n}-ls',     cents_amount(0, 100000))
@@ -131,7 +136,7 @@ def generate_form(output_path, num_members=None):
     set_text(p1,   'smsf-name', fund_name)
     set_number(p1, 'abn',       rand_abn())
 
-    # ── Page 2: Electronic funds / audit ─────────────────────────────────────
+    # ── Page 2: EFT details / audit ──────────────────────────────────────────
     p2 = doc[1]
     set_number(p2, 'ss-bsb',       rand_bsb())
     set_number(p2, 'ss-acc',       rand_account())
@@ -141,11 +146,9 @@ def generate_form(output_path, num_members=None):
     set_text(p2,   'ref-acc-name', fund_name)
     set_text(p2,   'esa',          random.choice(ESA_ALIASES))
 
-    # Audit: 0=No, 1=Yes
-    audit_a_qual = random.randint(0, 1)
-    audit_b_qual = random.randint(0, 1)
-    set_radio(p2, 'aud-parta-qual',     audit_a_qual)
-    set_radio(p2, 'aud-partb-qual',     audit_b_qual)
+    # Audit radio buttons: 0=No, 1=Yes
+    set_radio(p2, 'aud-parta-qual',     random.randint(0, 1))
+    set_radio(p2, 'aud-partb-qual',     random.randint(0, 1))
     set_radio(p2, 'aud-partb-qual-yes', random.randint(0, 1))
 
     # ── Page 3: ECPI ─────────────────────────────────────────────────────────
@@ -153,7 +156,6 @@ def generate_form(output_path, num_members=None):
     ecpi_choice = random.choice(['no', 'segregated', 'unsegregated'])
     if ecpi_choice != 'no':
         set_number(p3, 'ECPI', whole_amount(5000, 80000))
-
     set_radio(p3, 'ecpi-yes/no',      0 if ecpi_choice == 'no' else 1)
     set_radio(p3, 'ecpi-other-asses', random.randint(0, 1))
     if ecpi_choice != 'no':
@@ -180,15 +182,25 @@ def generate_form(output_path, num_members=None):
     p20 = doc[19]
     def wa(mn=0, mx=500000): return whole_amount(mn, mx)
 
-    set_number(p20, '15a-a',  wa(0, 300000))
-    set_number(p20, '15a-b',  wa(0, 100000))
-    set_number(p20, '15a-c',  wa(0, 200000))
-    set_number(p20, '15a-d',  wa(0, 300000))
-    set_number(p20, '15b-e',  wa(0, 500000))
-    set_number(p20, '15b-f',  wa(0, 800000))
-    set_number(p20, '15b-g',  wa(0, 800000))
-    set_number(p20, '15b-h',  wa(0, 500000))
-    set_number(p20, '15b-i',  wa(0, 50000))
+    # 15a – Australian managed investments
+    set_number(p20, '15a-a', wa(0, 300000))
+    set_number(p20, '15a-b', wa(0, 100000))
+    set_number(p20, '15a-c', wa(0, 200000))
+    set_number(p20, '15a-d', wa(0, 300000))
+
+    # 15b – Australian direct investments (right column)
+    set_number(p20, '15b-e', wa(0, 500000))
+    set_number(p20, '15b-f', wa(0, 800000))
+    set_number(p20, '15b-g', wa(0, 800000))
+    set_number(p20, '15b-h', wa(0, 500000))
+    set_number(p20, '15b-i', wa(0, 50000))
+    set_number(p20, '15b-j', wa(0, 800000))
+    set_number(p20, '15b-k', wa(0, 100000))
+    set_number(p20, '15b-l', wa(0, 300000))
+    set_number(p20, '15b-m', wa(0, 500000))
+    set_number(p20, '15b-0', wa(0, 800000))
+
+    # 15b – LRBA left column
     set_number(p20, '15b-j1', wa(0, 500000))
     set_number(p20, '15b-j2', wa(0, 300000))
     set_number(p20, '15b-js', wa(0, 200000))
@@ -196,19 +208,20 @@ def generate_form(output_path, num_members=None):
     set_number(p20, '15b-j5', wa(0, 200000))
     set_number(p20, '15b-j6', wa(0, 100000))
     set_number(p20, '15b-j7', wa(0, 100000))
-    set_number(p20, '15b-j',  wa(0, 800000))
-    set_number(p20, '15b-k',  wa(0, 100000))
-    set_number(p20, '15b-l',  wa(0, 300000))
-    set_number(p20, '15b-m',  wa(0, 500000))
-    set_number(p20, '15b-0',  wa(0, 800000))
-    set_number(p20, '15c-n',  wa(0, 50000))
+
+    # 15c – Crypto / other
+    set_number(p20, '15c-n', wa(0, 50000))
+
+    # Overseas (Text34–Text39)
     set_number(p20, 'Text34', wa(0, 100000))
     set_number(p20, 'Text35', wa(0, 100000))
     set_number(p20, 'Text36', wa(0, 100000))
     set_number(p20, 'Text37', wa(0, 100000))
     set_number(p20, 'Text38', wa(0, 100000))
     set_number(p20, 'Text39', wa(0, 100000))
-    set_number(p20, '15e',    wa(0, 50000))
+
+    # 15e – In-house assets
+    set_number(p20, '15e', wa(0, 50000))
 
     # ── Page 21: Liabilities ──────────────────────────────────────────────────
     p21 = doc[20]
@@ -224,7 +237,7 @@ def generate_form(output_path, num_members=None):
     # ── Page 22: Declarations ─────────────────────────────────────────────────
     p22 = doc[21]
     trustee_first, trustee_last = rand_name()
-    agent_first, agent_last     = rand_name()
+    agent_first,   agent_last   = rand_name()
     has_corp_trustee = random.random() > 0.5
 
     set_text(p22,   'trustee-family-name', trustee_last)
@@ -244,7 +257,8 @@ def generate_form(output_path, num_members=None):
     set_number(p22, 'tan-ref',               str(random.randint(10000000, 99999999)))
     set_number(p22, 'tan',                   str(random.randint(10000000, 99999999)))
 
-    doc.save(output_path)
+    # Save with incremental=False to ensure all field appearance streams are rebuilt
+    doc.save(output_path, incremental=False, encryption=pymupdf.PDF_ENCRYPT_NONE)
     doc.close()
     print(f"Generated: {output_path}  ({num_members} members)")
 

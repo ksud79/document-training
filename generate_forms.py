@@ -25,13 +25,19 @@ ESA_ALIASES = ['SMSFAUSTRALIA', 'BGLSMSF', 'CLASSSMSF', 'SUPERFUND', 'HEFFRON',
 
 # ── helpers ─────────────────────────────────────────────────────────────────
 def rand_tfn():
-    return f"{random.randint(100,999)} {random.randint(100,999)} {random.randint(100,999)}"
+    """Generate a valid-format 9-digit TFN: XXX XXX XXX"""
+    digits = [random.randint(0, 9) for _ in range(9)]
+    return f"{digits[0]}{digits[1]}{digits[2]} {digits[3]}{digits[4]}{digits[5]} {digits[6]}{digits[7]}{digits[8]}"
 
 def rand_abn():
-    return f"{random.randint(10,99)} {random.randint(100,999)} {random.randint(100,999)} {random.randint(100,999)}"
+    """Generate a valid-format 11-digit ABN: XX XXX XXX XXX"""
+    digits = [random.randint(0, 9) for _ in range(11)]
+    digits[0] = random.randint(1, 9)
+    return f"{digits[0]}{digits[1]} {digits[2]}{digits[3]}{digits[4]} {digits[5]}{digits[6]}{digits[7]} {digits[8]}{digits[9]}{digits[10]}"
 
 def rand_bsb():
-    return f"{random.randint(100,999)}-{random.randint(100,999)}"
+    """Generate a 6-digit BSB number with no hyphen."""
+    return f"{random.randint(100,999)}{random.randint(100,999)}"
 
 def rand_account():
     return str(random.randint(10000000, 999999999))
@@ -76,6 +82,15 @@ def set_text(page, field_name, value):
             widget.update()
             return
 
+def set_amount(page, field_name, value):
+    """Set a numeric/dollar field value, right-aligned."""
+    for widget in page.widgets():
+        if widget.field_name == field_name:
+            widget.field_value = str(value)
+            widget.text_align = 2  # 0=left, 1=center, 2=right
+            widget.update()
+            return
+
 def set_radio(page, field_name, option_index):
     """Select a radio button by option index (0 = first widget, 1 = second widget)."""
     matches = [w for w in page.widgets() if w.field_name == field_name]
@@ -88,16 +103,16 @@ def fill_member(page, n):
     """Fill fields for member N (1-based) on the given page."""
     ncdbis_field = 'mem1-ncsbis' if n == 1 else f'mem{n}-ncdbis'
 
-    set_text(page, f'mem{n}-ls',     cents_amount(0, 100000))
-    set_text(page, f'mem{n}-is',     cents_amount(0, 80000))
-    set_text(page, f'mem{n}-acc',    cents_amount(0, 800000))
-    set_text(page, ncdbis_field,     cents_amount(0, 600000))
-    set_text(page, f'mem{n}-cdbis',  cents_amount(0, 200000))
-    set_text(page, f'mem{n}-tris',   str(random.randint(0, 2)))
-    set_text(page, f'mem{n}-bal',    cents_amount(100000, 1500000))
-    set_text(page, f'mem{n}-accbal', cents_amount(0, 800000))
-    set_text(page, f'mem{n}-retbal', cents_amount(0, 600000))
-    set_text(page, f'mem{n}-lrba',   cents_amount(0, 300000))
+    set_amount(page, f'mem{n}-ls',     cents_amount(0, 100000))
+    set_amount(page, f'mem{n}-is',     cents_amount(0, 80000))
+    set_amount(page, f'mem{n}-acc',    cents_amount(0, 800000))
+    set_amount(page, ncdbis_field,     cents_amount(0, 600000))
+    set_amount(page, f'mem{n}-cdbis',  cents_amount(0, 200000))
+    set_amount(page, f'mem{n}-tris',   str(random.randint(0, 2)))
+    set_amount(page, f'mem{n}-bal',    cents_amount(100000, 1500000))
+    set_amount(page, f'mem{n}-accbal', cents_amount(0, 800000))
+    set_amount(page, f'mem{n}-retbal', cents_amount(0, 600000))
+    set_amount(page, f'mem{n}-lrba',   cents_amount(0, 300000))
 
 # ── main form generator ──────────────────────────────────────────────────────
 def generate_form(output_path, num_members=None):
@@ -138,7 +153,7 @@ def generate_form(output_path, num_members=None):
     p3 = doc[2]
     ecpi_choice = random.choice(['no', 'segregated', 'unsegregated'])
     if ecpi_choice != 'no':
-        set_text(p3, 'ECPI', whole_amount(5000, 80000))
+        set_amount(p3, 'ECPI', whole_amount(5000, 80000))
 
     # ecpi-yes/no: 0=No, 1=Yes
     set_radio(p3, 'ecpi-yes/no',       0 if ecpi_choice == 'no' else 1)
@@ -152,13 +167,13 @@ def generate_form(output_path, num_members=None):
 
     # ── Page 5: Management expenses ─────────────────────────────────────────
     p5 = doc[4]
-    set_text(p5, 'j1-admin-exp', whole_amount(1000, 20000))
-    set_text(p5, 'j2-admin-exp', whole_amount(0, 5000))
+    set_amount(p5, 'j1-admin-exp', whole_amount(1000, 20000))
+    set_amount(p5, 'j2-admin-exp', whole_amount(0, 5000))
 
     # ── Page 7: Losses carried forward ──────────────────────────────────────
     p7 = doc[6]
-    set_text(p7, 'cfl-tax', whole_amount(0, 50000))
-    set_text(p7, 'cfl-cg',  whole_amount(0, 50000))
+    set_amount(p7, 'cfl-tax', whole_amount(0, 50000))
+    set_amount(p7, 'cfl-cg',  whole_amount(0, 50000))
 
     # ── Pages 8–13: Members (pages index 7–12) ──────────────────────────────
     for n in range(1, 7):
@@ -170,46 +185,46 @@ def generate_form(output_path, num_members=None):
     p20 = doc[19]
     def wa(mn=0, mx=500000): return whole_amount(mn, mx)
 
-    set_text(p20, '15a-a',   wa(0, 300000))
-    set_text(p20, '15a-b',   wa(0, 100000))
-    set_text(p20, '15a-c',   wa(0, 200000))
-    set_text(p20, '15a-d',   wa(0, 300000))
-    set_text(p20, '15b-e',   wa(0, 500000))
-    set_text(p20, '15b-f',   wa(0, 800000))
-    set_text(p20, '15b-g',   wa(0, 800000))
-    set_text(p20, '15b-h',   wa(0, 500000))
-    set_text(p20, '15b-i',   wa(0, 50000))
-    set_text(p20, '15b-j1',  wa(0, 500000))
-    set_text(p20, '15b-j2',  wa(0, 300000))
-    set_text(p20, '15b-js',  wa(0, 200000))
-    set_text(p20, '15b-j4',  wa(0, 800000))
-    set_text(p20, '15b-j5',  wa(0, 200000))
-    set_text(p20, '15b-j6',  wa(0, 100000))
-    set_text(p20, '15b-j7',  wa(0, 100000))
-    set_text(p20, '15b-j',   wa(0, 800000))
-    set_text(p20, '15b-k',   wa(0, 100000))
-    set_text(p20, '15b-l',   wa(0, 300000))
-    set_text(p20, '15b-m',   wa(0, 500000))
-    set_text(p20, '15b-0',   wa(0, 800000))
-    set_text(p20, '15c-n',   wa(0, 50000))
-    set_text(p20, 'Text34',  wa(0, 100000))
-    set_text(p20, 'Text35',  wa(0, 100000))
-    set_text(p20, 'Text36',  wa(0, 100000))
-    set_text(p20, 'Text37',  wa(0, 100000))
-    set_text(p20, 'Text38',  wa(0, 100000))
-    set_text(p20, 'Text39',  wa(0, 100000))
-    set_text(p20, '15e',     wa(0, 50000))
+    set_amount(p20, '15a-a',   wa(0, 300000))
+    set_amount(p20, '15a-b',   wa(0, 100000))
+    set_amount(p20, '15a-c',   wa(0, 200000))
+    set_amount(p20, '15a-d',   wa(0, 300000))
+    set_amount(p20, '15b-e',   wa(0, 500000))
+    set_amount(p20, '15b-f',   wa(0, 800000))
+    set_amount(p20, '15b-g',   wa(0, 800000))
+    set_amount(p20, '15b-h',   wa(0, 500000))
+    set_amount(p20, '15b-i',   wa(0, 50000))
+    set_amount(p20, '15b-j1',  wa(0, 500000))
+    set_amount(p20, '15b-j2',  wa(0, 300000))
+    set_amount(p20, '15b-js',  wa(0, 200000))
+    set_amount(p20, '15b-j4',  wa(0, 800000))
+    set_amount(p20, '15b-j5',  wa(0, 200000))
+    set_amount(p20, '15b-j6',  wa(0, 100000))
+    set_amount(p20, '15b-j7',  wa(0, 100000))
+    set_amount(p20, '15b-j',   wa(0, 800000))
+    set_amount(p20, '15b-k',   wa(0, 100000))
+    set_amount(p20, '15b-l',   wa(0, 300000))
+    set_amount(p20, '15b-m',   wa(0, 500000))
+    set_amount(p20, '15b-0',   wa(0, 800000))
+    set_amount(p20, '15c-n',   wa(0, 50000))
+    set_amount(p20, 'Text34',  wa(0, 100000))
+    set_amount(p20, 'Text35',  wa(0, 100000))
+    set_amount(p20, 'Text36',  wa(0, 100000))
+    set_amount(p20, 'Text37',  wa(0, 100000))
+    set_amount(p20, 'Text38',  wa(0, 100000))
+    set_amount(p20, 'Text39',  wa(0, 100000))
+    set_amount(p20, '15e',     wa(0, 50000))
 
     # ── Page 21: Liabilities ─────────────────────────────────────────────────
     p21 = doc[20]
-    set_text(p21, '16-v1', wa(0, 100000))
-    set_text(p21, '16-v2', wa(0, 100000))
-    set_text(p21, '16-v3', wa(0, 100000))
-    set_text(p21, '16v',   wa(0, 200000))
-    set_text(p21, '16w',   wa(100000, 2000000))
-    set_text(p21, '16x',   wa(0, 50000))
-    set_text(p21, '16y',   wa(0, 50000))
-    set_text(p21, '16z',   wa(0, 50000))
+    set_amount(p21, '16-v1', wa(0, 100000))
+    set_amount(p21, '16-v2', wa(0, 100000))
+    set_amount(p21, '16-v3', wa(0, 100000))
+    set_amount(p21, '16v',   wa(0, 200000))
+    set_amount(p21, '16w',   wa(100000, 2000000))
+    set_amount(p21, '16x',   wa(0, 50000))
+    set_amount(p21, '16y',   wa(0, 50000))
+    set_amount(p21, '16z',   wa(0, 50000))
 
     # ── Page 22: Declarations ────────────────────────────────────────────────
     p22 = doc[21]
@@ -231,8 +246,8 @@ def generate_form(output_path, num_members=None):
     set_text(p22, 'tax-agent-other-name',  random.choice(FIRST_NAMES))
     set_text(p22, 'Tax agents practice',   random.choice(PRACTICES))
     set_text(p22, 'tan-phone',             rand_phone())
-    set_text(p22, 'tan-ref',               str(random.randint(10000000, 99999999)))
-    set_text(p22, 'tan',                   str(random.randint(10000000, 99999999)))
+    set_amount(p22, 'tan-ref',             str(random.randint(10000000, 99999999)))
+    set_amount(p22, 'tan',                 str(random.randint(10000000, 99999999)))
 
     doc.save(output_path)
     doc.close()

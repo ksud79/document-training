@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-managed Superannuation Fund Annual Return 2024</title>
+    <style>
+        /* Base Setup & Typography */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #111;
+            line-height: 1.35;
+            background-color: #e5e5e5;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .form-page {
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border: 1px solid #000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+        }
+
+        /* Top Header Styling */
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header-main {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .header-sub {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .security-classification {
+            font-size: 11px;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        /* Section Containers */
+        .section-header {
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 6px 10px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            font-style: italic;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        /* Row Layout Mechanics */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            min-height: 28px;
+        }
+
+        .form-row.indent {
+            margin-left: 25px;
+        }
+
+        .label-column {
+            flex: 1;
+            font-size: 13px;
+            padding-right: 15px;
+        }
+
+        .label-column strong {
+            display: inline-block;
+            width: 25px;
+        }
+
+        .input-column {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .label-code {
+            font-weight: bold;
+            font-size: 13px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .currency {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Boxed Grid Inputs (Simulating Character Sheets) */
+        .char-grid {
+            display: grid;
+            border-top: 1px solid #000;
+            border-left: 1px solid #000;
+            background-color: #fff;
+        }
+
+        .char-box {
+            width: 18px;
+            height: 20px;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        /* Grid Track Variances */
+        .grid-tfn { grid-template-columns: repeat(9, 1fr); }
+        .grid-abn { grid-template-columns: repeat(11, 1fr); }
+        .grid-amount { grid-template-columns: repeat(12, 1fr); }
+        .grid-date { grid-template-columns: repeat(8, 1fr); }
+        .grid-code { grid-template-columns: repeat(1, 1fr); }
+
+        /* standard native controls mapped cleanly */
+        .input-text-line {
+            border: none;
+            border-bottom: 1px solid #000;
+            width: 250px;
+            font-size: 13px;
+            padding: 2px;
+        }
+        .input-text-long {
+            border: none;
+            border-bottom: 1px solid #000;
+            width: 100%;
+            font-size: 13px;
+            padding: 2px;
+            margin-bottom: 10px;
+        }
+
+        .hint-block {
+            font-size: 11px;
+            color: #444;
+            margin-left: 25px;
+            margin-top: -6px;
+            margin-bottom: 12px;
+        }
+
+        /* Form Controls */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+        }
+        .check-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .square-check {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #000;
+        }
+
+        /* Block separation helpers */
+        .member-block {
+            border: 1px dashed #777;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+        .nested-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .footer-note {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-page">
+        <div class="security-classification">OFFICIAL: Sensitive (when completed)</div>
+        
+        <table class="header-table">
+            <tr>
+                <td>
+                    <div class="header-main">Self-managed superannuation fund <br>annual return 2024</div>
+                </td>
+                <td style="text-align: right; font-size: 12px; font-weight: bold; vertical-align: bottom;">
+                    Australian Taxation Office
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-header">Section A: Fund information</div>
+        
+        <div class="form-row">
+            <div class="label-column"><strong>1</strong> Tax file number (TFN)</div>
+            <div class="input-column">
+                <div class="char-grid grid-tfn">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hint-block">To assist processing, write the fund's TFN at the top of pages 3, 5, 7, 9 and 11.</div>
+
+        <div class="form-row">
+            <div class="label-column"><strong>2</strong> Name of self-managed superannuation fund (SMSF)</div>
+        </div>
+        <input type="text" class="input-text-long">
+
+        <div class="form-row">
+            <div class="label-column"><strong>3</strong> Australian business number (ABN)</div>
+            <div class="input-column">
+                <div class="char-grid grid-abn">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column"><strong>4</strong> Current postal address</div>
+        </div>
+        <input type="text" class="input-text-long" placeholder="Street address or PO Box">
+        
+        <div class="nested-grid">
+            <div>
+                <label style="font-size: 12px;">Suburb/town</label><br>
+                <input type="text" class="input-text-long">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 12px;">State/territory</label>
+                    <input type="text" class="input-text-long">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 12px;">Postcode</label>
+                    <input type="text" class="input-text-long">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column"><strong>5</strong> Annual return status</div>
+        </div>
+        <div class="form-row indent">
+            <div class="label-column">Is this an amendment to the SMSF's 2024 return?</div>
+            <div class="input-column">
+                <span class="label-code">A</span>
+                <div class="checkbox-container">
+                    <div class="check-option"><div class="square-check"></div> No</div>
+                    <div class="check-option"><div class="square-check"></div> Yes</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row indent">
+            <div class="label-column">Is this the first required return for a newly registered SMSF?</div>
+            <div class="input-column">
+                <span class="label-code">B</span>
+                <div class="checkbox-container">
+                    <div class="check-option"><div class="square-check"></div> No</div>
+                    <div class="check-option"><div class="square-check"></div> Yes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column"><strong>6</strong> SMSF auditor number</div>
+            <div class="input-column">
+                <div class="char-grid grid-tfn"> <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Date audit was completed</div>
+            <div class="input-column">
+                <span class="label-code">A</span>
+                <div class="char-grid grid-date">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <div>NAT 71226-06.2024</div>
+            <div>Page 1</div>
+        </div>
+    </div>
+
+
+    <div class="form-page">
+        <div class="security-classification">OFFICIAL: Sensitive (when completed)</div>
+        
+        <div class="section-header">Section B: Assessable Income</div>
+        <div class="section-subtitle">Do not complete if all fields are supporting streams in retirement phase.</div>
+
+        <div class="form-row">
+            <div class="label-column">Did you have a capital gains tax (CGT) event?</div>
+            <div class="input-column">
+                <span class="label-code">G</span>
+                <div class="checkbox-container"><div class="check-option"><div class="square-check"></div> No</div><div class="check-option"><div class="square-check"></div> Yes</div></div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Net capital gain</div>
+            <div class="input-column">
+                <span class="label-code">A</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Gross rent and other leasing income</div>
+            <div class="input-column">
+                <span class="label-code">B</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Gross interest</div>
+            <div class="input-column">
+                <span class="label-code">C</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Assessable employer contributions</div>
+            <div class="input-column">
+                <span class="label-code">R1</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Section C: Deductions and Expenses</div>
+        
+        <div class="form-row">
+            <div class="label-column">Interest expenses within Australia</div>
+            <div class="input-column">
+                <span class="label-code">A1</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">SMSF auditor fee</div>
+            <div class="input-column">
+                <span class="label-code">H1</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Section D: Income tax calculation statement</div>
+
+        <div class="form-row">
+            <div class="label-column"><strong>*Taxable income</strong> (mandatory field)</div>
+            <div class="input-column">
+                <span class="label-code">A</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Tax on taxable income</div>
+            <div class="input-column">
+                <span class="label-code">T1</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Supervisory levy</div>
+            <div class="input-column">
+                <span class="label-code">L</span><span class="currency">$</span>
+                <div style="font-size: 13px; font-weight: bold; width: 224px; text-align: right; padding-right: 5px;">259 . 00</div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <div>NAT 71226-06.2024</div>
+            <div>Page 2</div>
+        </div>
+    </div>
+
+
+    <div class="form-page">
+        <div class="security-classification">OFFICIAL: Sensitive (when completed)</div>
+        
+        <div class="section-header">Section F: Member information</div>
+        
+        <div class="member-block">
+            <h3>MEMBER 1</h3>
+            
+            <div class="nested-grid">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold;">Family Name</label><br>
+                    <input type="text" class="input-text-long">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold;">First Given Name</label><br>
+                    <input type="text" class="input-text-long">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="label-column">Member's TFN</div>
+                <div class="input-column">
+                    <div class="char-grid grid-tfn">
+                        <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="label-column">Opening Account Balance</div>
+                <div class="input-column">
+                    <span class="currency">$</span>
+                    <div class="char-grid grid-amount">
+                        <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="label-column">Employer Contributions</div>
+                <div class="input-column">
+                    <span class="label-code">A</span><span class="currency">$</span>
+                    <div class="char-grid grid-amount">
+                        <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="label-column">Personal Contributions</div>
+                <div class="input-column">
+                    <span class="label-code">B</span><span class="currency">$</span>
+                    <div class="char-grid grid-amount">
+                        <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="label-column"><strong>Closing Account Balance</strong></div>
+                <div class="input-column">
+                    <span class="label-code">S</span><span class="currency">$</span>
+                    <div class="char-grid grid-amount">
+                        <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Section H: Assets and liabilities</div>
+        
+        <div class="form-row">
+            <div class="label-column">Cash and term deposits</div>
+            <div class="input-column">
+                <span class="label-code">E</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Listed shares</div>
+            <div class="input-column">
+                <span class="label-code">H</span><span class="currency">$</span>
+                <div class="char-grid grid-amount">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Section K: Declarations</div>
+        <p style="font-size: 11px;">Important: Penalties may be imposed for false or misleading statements.</p>
+        
+        <div class="form-row" style="margin-top: 20px;">
+            <div class="label-column">Authorised trustee's, director's or public officer's signature</div>
+            <div class="input-column">
+                <input type="text" class="input-text-line" style="width: 200px;" placeholder="Sign here">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="label-column">Date</div>
+            <div class="input-column">
+                <div class="char-grid grid-date">
+                    <div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div><div class="char-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <div>NAT 71226-06.2024</div>
+            <div>Page 3</div>
+        </div>
+    </div>
+
+</body>
+</html>

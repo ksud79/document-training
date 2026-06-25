@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMSF Annual Return 2024</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #000;
+      background: #fff;
+      padding: 20px;
+    }
+    h1 { font-size: 14pt; text-align: center; margin-bottom: 4px; }
+    h2 { font-size: 11pt; background: #003366; color: #fff;
+         padding: 4px 8px; margin: 16px 0 6px; }
+    h3 { font-size: 10pt; margin: 10px 0 4px; }
+    p.note { font-size: 9pt; color: #444; margin-bottom: 6px; font-style: italic; }
+
+    /* ── Layout helpers ───────────────────────────────────── */
+    .form-row { display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+    .form-group { display: flex; flex-direction: column; gap: 3px; }
+    .form-group label { font-size: 9pt; font-weight: bold; }
+    .form-group.grow { flex: 1; min-width: 120px; }
+    .form-group.half { flex: 0 0 calc(50% - 6px); min-width: 140px; }
+    .form-group.third { flex: 0 0 calc(33% - 8px); min-width: 100px; }
+    .form-group.quarter { flex: 0 0 calc(25% - 9px); min-width: 80px; }
+    .form-group.fixed80 { flex: 0 0 80px; }
+    .form-group.fixed120 { flex: 0 0 120px; }
+    .form-group.fixed180 { flex: 0 0 180px; }
+
+    /* ── Input styles ─────────────────────────────────────── */
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      border: 1px solid #000;
+      padding: 3px 5px;
+      font-size: 10pt;
+      font-family: Arial, sans-serif;
+      width: 100%;
+    }
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* dollar prefix */
+    .dollar-wrap { position: relative; display: flex; align-items: center; }
+    .dollar-wrap::before {
+      content: "$";
+      position: absolute;
+      left: 6px;
+      font-size: 10pt;
+      pointer-events: none;
+    }
+    .dollar-wrap input { padding-left: 18px; }
+
+    /* ── Radio / checkbox ─────────────────────────────────── */
+    .radio-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 2px; }
+    .radio-group label { font-size: 10pt; font-weight: normal; display: flex; align-items: center; gap: 3px; }
+    .check-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .check-row label { font-size: 10pt; }
+
+    /* ── Section divider ──────────────────────────────────── */
+    .tfn-bar {
+      background: #003366; color: #fff;
+      font-size: 9pt; padding: 2px 8px;
+      margin: 14px 0 2px;
+      display: flex; justify-content: flex-end;
+    }
+
+    /* ── Table for deductions ─────────────────────────────── */
+    table.deductions {
+      width: 100%; border-collapse: collapse; margin-bottom: 8px;
+    }
+    table.deductions th, table.deductions td {
+      border: 1px solid #000; padding: 4px 6px; font-size: 10pt;
+    }
+    table.deductions th { background: #d0d8e8; text-align: left; }
+
+    /* ── Signature box ────────────────────────────────────── */
+    .sig-box { border: 1px solid #000; height: 50px; margin-top: 4px; }
+
+    /* ── Print ───────────────────────────────────────────── */
+    @media print {
+      body { padding: 8px; font-size: 10pt; }
+      h2 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .tfn-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none; }
+    }
+
+    /* ── Misc ────────────────────────────────────────────── */
+    .section-indent { margin-left: 16px; }
+    fieldset { border: 1px solid #999; padding: 8px; margin-bottom: 8px; }
+    legend { font-weight: bold; font-size: 10pt; padding: 0 4px; }
+    hr { border: none; border-top: 1px solid #000; margin: 12px 0; }
+    .small { font-size: 9pt; }
+  </style>
+</head>
+<body>
+
+<h1>Self-managed superannuation fund annual return 2024</h1>
+<p style="text-align:center;font-size:9pt;">NAT 71226 — Income year 1 July 2023 – 30 June 2024</p>
+
+<p class="note">Only SMSFs can complete this return. Use BLACK pen, BLOCK LETTERS, one character per box.<br>
+Numbers must NOT contain commas (e.g. enter 50000 not 50,000).</p>
+
+<form id="smsfForm" onsubmit="return false;">
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION A — Fund information
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section A: Fund information</h2>
+
+<!-- Q1 TFN -->
+<h3>1 Tax file number (TFN)</h3>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="tfn">TFN</label>
+    <input type="text" id="tfn" name="tfn" maxlength="9" placeholder="e.g. 123456789">
+  </div>
+</div>
+
+<!-- Q2 Fund name -->
+<h3>2 Name of self-managed superannuation fund (SMSF)</h3>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="fundName">Fund name</label>
+    <input type="text" id="fundName" name="fundName">
+  </div>
+</div>
+
+<!-- Q3 ABN -->
+<h3>3 Australian business number (ABN)</h3>
+<div class="form-row">
+  <div class="form-group fixed180">
+    <label for="abn">ABN (if applicable)</label>
+    <input type="text" id="abn" name="abn" maxlength="11" placeholder="e.g. 51824753556">
+  </div>
+</div>
+
+<!-- Q4 Address -->
+<h3>4 Current postal address</h3>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="addrLine1">Address line 1</label>
+    <input type="text" id="addrLine1" name="addrLine1">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="addrLine2">Address line 2</label>
+    <input type="text" id="addrLine2" name="addrLine2">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="suburb">Suburb/town</label>
+    <input type="text" id="suburb" name="suburb">
+  </div>
+  <div class="form-group fixed80">
+    <label for="state">State/territory</label>
+    <select id="state" name="state">
+      <option value=""></option>
+      <option>ACT</option><option>NSW</option><option>NT</option>
+      <option>QLD</option><option>SA</option><option>TAS</option>
+      <option>VIC</option><option>WA</option>
+    </select>
+  </div>
+  <div class="form-group fixed80">
+    <label for="postcode">Postcode</label>
+    <input type="text" id="postcode" name="postcode" maxlength="4">
+  </div>
+</div>
+
+<!-- Q5 Annual return status -->
+<h3>5 Annual return status</h3>
+<div class="check-row">
+  <label>A &nbsp;Is this an amendment to the SMSF's 2024 return?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q5a" value="No" checked> No</label>
+    <label><input type="radio" name="q5a" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="check-row">
+  <label>B &nbsp;Is this the first required return for a newly registered SMSF?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q5b" value="No" checked> No</label>
+    <label><input type="radio" name="q5b" value="Yes"> Yes</label>
+  </div>
+</div>
+
+<!-- Q6 Auditor -->
+<h3>6 SMSF auditor</h3>
+<div class="form-row">
+  <div class="form-group fixed80">
+    <label for="auditorTitle">Title</label>
+    <select id="auditorTitle" name="auditorTitle">
+      <option></option><option>Mr</option><option>Mrs</option>
+      <option>Miss</option><option>Ms</option><option>Other</option>
+    </select>
+  </div>
+  <div class="form-group grow">
+    <label for="auditorFamilyName">Family name</label>
+    <input type="text" id="auditorFamilyName" name="auditorFamilyName">
+  </div>
+  <div class="form-group grow">
+    <label for="auditorFirstName">First given name</label>
+    <input type="text" id="auditorFirstName" name="auditorFirstName">
+  </div>
+  <div class="form-group grow">
+    <label for="auditorOtherNames">Other given names</label>
+    <input type="text" id="auditorOtherNames" name="auditorOtherNames">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group fixed180">
+    <label for="auditorSAN">SMSF Auditor Number (SAN)</label>
+    <input type="text" id="auditorSAN" name="auditorSAN">
+  </div>
+  <div class="form-group fixed180">
+    <label for="auditorPhone">Auditor's phone number</label>
+    <input type="tel" id="auditorPhone" name="auditorPhone">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="auditorAddr">Postal address</label>
+    <input type="text" id="auditorAddr" name="auditorAddr">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="auditorSuburb">Suburb/town</label>
+    <input type="text" id="auditorSuburb" name="auditorSuburb">
+  </div>
+  <div class="form-group fixed80">
+    <label for="auditorState">State</label>
+    <select id="auditorState" name="auditorState">
+      <option></option>
+      <option>ACT</option><option>NSW</option><option>NT</option>
+      <option>QLD</option><option>SA</option><option>TAS</option>
+      <option>VIC</option><option>WA</option>
+    </select>
+  </div>
+  <div class="form-group fixed80">
+    <label for="auditorPostcode">Postcode</label>
+    <input type="text" id="auditorPostcode" name="auditorPostcode" maxlength="4">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group quarter">
+    <label for="auditDay">Day</label>
+    <input type="text" id="auditDay" name="auditDay" maxlength="2" placeholder="DD">
+  </div>
+  <div class="form-group quarter">
+    <label for="auditMonth">Month</label>
+    <input type="text" id="auditMonth" name="auditMonth" maxlength="2" placeholder="MM">
+  </div>
+  <div class="form-group quarter">
+    <label for="auditYear">Year</label>
+    <input type="text" id="auditYear" name="auditYear" maxlength="4" placeholder="YYYY">
+  </div>
+</div>
+<p class="small">A &nbsp;Date audit was completed (above)</p>
+<div class="check-row">
+  <label>B &nbsp;Was Part A of the audit report qualified?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q6b" value="No" checked> No</label>
+    <label><input type="radio" name="q6b" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="check-row">
+  <label>C &nbsp;Was Part B of the audit report qualified?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q6c" value="No" checked> No</label>
+    <label><input type="radio" name="q6c" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="check-row">
+  <label>D &nbsp;If Part B was qualified, have the reported issues been rectified?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q6d" value="No" checked> No</label>
+    <label><input type="radio" name="q6d" value="Yes"> Yes</label>
+  </div>
+</div>
+
+<!-- Q7 EFT -->
+<h3>7 Electronic funds transfer (EFT)</h3>
+<fieldset>
+  <legend>A – Fund's financial institution account (super contributions &amp; rollovers)</legend>
+  <div class="form-row">
+    <div class="form-group fixed120">
+      <label for="fundBSB">Fund BSB number</label>
+      <input type="text" id="fundBSB" name="fundBSB" maxlength="6">
+    </div>
+    <div class="form-group grow">
+      <label for="fundAccountNo">Fund account number</label>
+      <input type="text" id="fundAccountNo" name="fundAccountNo">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="fundAccountName">Fund account name</label>
+      <input type="text" id="fundAccountName" name="fundAccountName">
+    </div>
+  </div>
+  <div class="check-row">
+    <label>Use this account for tax refunds?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q7taxRefundSame" value="Yes"> Yes</label>
+      <label><input type="radio" name="q7taxRefundSame" value="No" checked> No – complete B</label>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>B – Financial institution account for tax refunds (optional)</legend>
+  <div class="form-row">
+    <div class="form-group fixed120">
+      <label for="refundBSB">BSB number</label>
+      <input type="text" id="refundBSB" name="refundBSB" maxlength="6">
+    </div>
+    <div class="form-group grow">
+      <label for="refundAccountNo">Account number</label>
+      <input type="text" id="refundAccountNo" name="refundAccountNo">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="refundAccountName">Account name</label>
+      <input type="text" id="refundAccountName" name="refundAccountName">
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>C – Electronic service address alias (ESA)</legend>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="esa">ESA alias</label>
+      <input type="text" id="esa" name="esa">
+    </div>
+  </div>
+</fieldset>
+
+<!-- Q8 Status -->
+<h3>8 Status of SMSF</h3>
+<div class="check-row">
+  <label>A &nbsp;Does the trust deed allow Super Co-contribution / Low Income Super Amounts?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q8a" value="No" checked> No</label>
+    <label><input type="radio" name="q8a" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group fixed80">
+    <label for="benefitStructureCode">B – Benefit structure code</label>
+    <input type="text" id="benefitStructureCode" name="benefitStructureCode" maxlength="2">
+  </div>
+</div>
+<div class="check-row">
+  <label>C &nbsp;Australian superannuation fund?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q8c" value="No"> No</label>
+    <label><input type="radio" name="q8c" value="Yes" checked> Yes</label>
+  </div>
+</div>
+
+<!-- Q9 Wound up -->
+<h3>9 Was the fund wound up during the income year?</h3>
+<div class="check-row">
+  <div class="radio-group">
+    <label><input type="radio" name="q9woundUp" value="No" checked> No</label>
+    <label><input type="radio" name="q9woundUp" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group quarter">
+    <label for="woundUpDay">Day</label>
+    <input type="text" id="woundUpDay" name="woundUpDay" maxlength="2" placeholder="DD">
+  </div>
+  <div class="form-group quarter">
+    <label for="woundUpMonth">Month</label>
+    <input type="text" id="woundUpMonth" name="woundUpMonth" maxlength="2" placeholder="MM">
+  </div>
+  <div class="form-group quarter">
+    <label for="woundUpYear">Year</label>
+    <input type="text" id="woundUpYear" name="woundUpYear" maxlength="4" placeholder="YYYY">
+  </div>
+</div>
+<div class="check-row">
+  <label>Have all tax lodgment and payment obligations been met?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q9obligations" value="No" checked> No</label>
+    <label><input type="radio" name="q9obligations" value="Yes"> Yes</label>
+  </div>
+</div>
+
+<!-- Q10 Exempt current pension income -->
+<h3>10 Exempt current pension income</h3>
+<div class="check-row">
+  <label>Did the fund pay retirement phase superannuation income stream benefits?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q10pension" value="No" checked> No – go to Section B</label>
+    <label><input type="radio" name="q10pension" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="section-indent">
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="q10ecpiAmount">A – Exempt current pension income amount ($)</label>
+      <div class="dollar-wrap">
+        <input type="number" id="q10ecpiAmount" name="q10ecpiAmount" step="1" min="0">
+      </div>
+    </div>
+  </div>
+  <div class="check-row">
+    <label>Method used:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q10method" value="Segregated"> B – Segregated assets method</label>
+      <label><input type="radio" name="q10method" value="Unsegregated"> C – Unsegregated assets method</label>
+    </div>
+  </div>
+  <div class="check-row">
+    <label>D – Was an actuarial certificate obtained?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q10actuarial" value="No" checked> No</label>
+      <label><input type="radio" name="q10actuarial" value="Yes"> Yes</label>
+    </div>
+  </div>
+  <div class="check-row">
+    <label>E – Did the fund have any other assessable income?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q10otherIncome" value="No" checked> No – go to Section C</label>
+      <label><input type="radio" name="q10otherIncome" value="Yes"> Yes – complete Section B</label>
+    </div>
+  </div>
+</div>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION B — Income
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section B: Income</h2>
+<h3>11 Income</h3>
+
+<div class="check-row">
+  <label>G – Did you have a CGT event during the year?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q11g" value="No" checked> No</label>
+    <label><input type="radio" name="q11g" value="Yes"> Yes</label>
+  </div>
+</div>
+<div class="check-row">
+  <label>M – Have you applied an exemption or rollover?</label>
+  <div class="radio-group">
+    <label><input type="radio" name="q11m" value="No" checked> No</label>
+    <label><input type="radio" name="q11m" value="Yes"> Yes</label>
+  </div>
+</div>
+
+<!-- Income labels -->
+<table style="width:100%;border-collapse:collapse;margin-top:8px;">
+  <tbody id="incomeTable">
+    <!-- rows injected via JS or Python -->
+  </tbody>
+</table>
+
+<script>
+// Build income rows programmatically
+const incomeFields = [
+  ["A", "Net capital gain"],
+  ["B", "Gross rent and other leasing and hiring income"],
+  ["C", "Gross interest"],
+  ["D", "Forestry managed investment scheme income"],
+  ["E", "Australian franking credits from a New Zealand company"],
+  ["F", "Transfers from foreign funds"],
+  ["H", "Gross payments where ABN not quoted"],
+  ["I", "Gross distribution from partnerships"],
+  ["J", "Unfranked dividend amount (*)"],
+  ["K", "Franked dividend amount (*)"],
+  ["L", "Dividend franking credit (*)"],
+  ["N", "Gross trust distributions (*)"],
+  ["S", "Other income (*)"],
+  ["T", "Assessable income due to changed tax status of fund (*)"],
+  ["U1","Net non-arm's length private company dividends"],
+  ["U2","Net non-arm's length trust distributions"],
+  ["U3","Net other non-arm's length income"],
+  ["U", "Net non-arm's length income (U1+U2+U3) — 45% tax rate"],
+  ["Y", "Exempt current pension income"],
+];
+const tbody = document.getElementById("incomeTable");
+incomeFields.forEach(([lbl, desc]) => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td style="width:24px;font-weight:bold;border:1px solid #000;padding:3px 5px;">${lbl}</td>
+    <td style="border:1px solid #000;padding:3px 8px;font-size:10pt;">${desc}</td>
+    <td style="border:1px solid #000;padding:3px 5px;width:160px;">
+      <div class="dollar-wrap" style="position:relative;display:flex;align-items:center;">
+        <span style="position:absolute;left:6px;">$</span>
+        <input type="number" name="income_${lbl}" step="1" min="0"
+          style="padding-left:18px;border:1px solid #000;width:100%;font-size:10pt;">
+      </div>
+    </td>`;
+  tbody.appendChild(tr);
+});
+</script>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION C — Deductions
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section C: Deductions and non-deductible expenses</h2>
+<h3>12 Deductions and non-deductible expenses</h3>
+<p class="note">List deductible amounts under "Deductions"; all others (including expenses related to exempt pension income) under "Non-deductible expenses".</p>
+
+<table class="deductions">
+  <thead>
+    <tr>
+      <th>Expense item</th>
+      <th>Deductions ($)</th>
+      <th>Non-deductible expenses ($)</th>
+    </tr>
+  </thead>
+  <tbody id="deductionTable"></tbody>
+</table>
+
+<script>
+const deductionItems = [
+  "Interest expenses within Australia",
+  "Interest expenses overseas",
+  "Capital works expenditure",
+  "Decline in value of depreciating assets",
+  "Insurance premiums – members",
+  "SMSF auditor fee",
+  "Investment expenses",
+  "Management and administration expenses",
+  "Forestry managed investment scheme expense",
+  "Other amounts",
+  "Tax losses deducted",
+];
+const dtbody = document.getElementById("deductionTable");
+deductionItems.forEach(item => {
+  const key = item.replace(/[^a-zA-Z0-9]/g,"_");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td style="border:1px solid #000;padding:3px 6px;font-size:10pt;">${item}</td>
+    <td style="border:1px solid #000;padding:2px 4px;">
+      <div class="dollar-wrap" style="position:relative;display:flex;align-items:center;">
+        <span style="position:absolute;left:6px;">$</span>
+        <input type="number" name="ded_${key}" step="1" min="0" style="padding-left:18px;border:none;width:100%;font-size:10pt;">
+      </div>
+    </td>
+    <td style="border:1px solid #000;padding:2px 4px;">
+      <div class="dollar-wrap" style="position:relative;display:flex;align-items:center;">
+        <span style="position:absolute;left:6px;">$</span>
+        <input type="number" name="nded_${key}" step="1" min="0" style="padding-left:18px;border:none;width:100%;font-size:10pt;">
+      </div>
+    </td>`;
+  dtbody.appendChild(tr);
+});
+</script>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION D — Income tax calculation statement
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section D: Income tax calculation statement</h2>
+<h3>13 Calculation statement</h3>
+<p class="note">Labels A, T1, J, T5 and I are mandatory — leaving blank specifies zero.</p>
+
+<table style="width:100%;border-collapse:collapse;">
+  <tbody id="calcTable"></tbody>
+</table>
+
+<script>
+const calcFields = [
+  ["A",  "Taxable income or loss"],
+  ["T1", "Tax on taxable income"],
+  ["B",  "Gross tax (T1 plus J)"],
+  ["C",  "Less: franking offset"],
+  ["T2", "SUBTOTAL 1 (B less C)"],
+  ["D",  "Less: tax offsets"],
+  ["T3", "SUBTOTAL 2 (T2 less D)"],
+  ["E",  "Refundable tax offsets"],
+  ["G",  "Section 102AAM interest charge"],
+  ["I",  "Tax offset refunds (remainder of refundable)"],
+  ["J",  "Less: foreign income tax offset"],
+  ["T4", "SUBTOTAL 3"],
+  ["T5", "Tax payable or refundable"],
+  ["K",  "PAYG instalments raised"],
+  ["L",  "Supervisory levy"],
+  ["M",  "Supervisory levy adjustment – wound up funds"],
+  ["N",  "Supervisory levy adjustment – new funds"],
+];
+const ctbody = document.getElementById("calcTable");
+calcFields.forEach(([lbl, desc]) => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td style="width:30px;font-weight:bold;border:1px solid #000;padding:3px 5px;">${lbl}</td>
+    <td style="border:1px solid #000;padding:3px 8px;font-size:10pt;">${desc}</td>
+    <td style="border:1px solid #000;padding:2px 4px;width:160px;">
+      <div class="dollar-wrap" style="position:relative;display:flex;align-items:center;">
+        <span style="position:absolute;left:6px;">$</span>
+        <input type="number" name="calc_${lbl}" step="1"
+          style="padding-left:18px;border:1px solid #000;width:100%;font-size:10pt;">
+      </div>
+    </td>`;
+  ctbody.appendChild(tr);
+});
+</script>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION E — Losses
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section E: Losses</h2>
+<h3>14 Losses</h3>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="taxLossCarryFwd">Tax losses carried forward to later income years ($)</label>
+    <div class="dollar-wrap">
+      <input type="number" id="taxLossCarryFwd" name="taxLossCarryFwd" step="1" min="0">
+    </div>
+  </div>
+  <div class="form-group grow">
+    <label for="cgLossCarryFwd">Net capital losses carried forward to later income years ($)</label>
+    <div class="dollar-wrap">
+      <input type="number" id="cgLossCarryFwd" name="cgLossCarryFwd" step="1" min="0">
+    </div>
+  </div>
+</div>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION F — Member information  (Members 1 & 2)
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section F: Member information</h2>
+
+<script>
+function buildMemberSection(n) {
+  document.write(`
+  <fieldset style="margin-bottom:12px;">
+    <legend>MEMBER ${n}</legend>
+    <div class="form-row">
+      <div class="form-group fixed80">
+        <label for="m${n}Title">Title</label>
+        <select id="m${n}Title" name="m${n}Title">
+          <option></option><option>Mr</option><option>Mrs</option>
+          <option>Miss</option><option>Ms</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group grow">
+        <label for="m${n}FamilyName">Family name</label>
+        <input type="text" id="m${n}FamilyName" name="m${n}FamilyName">
+      </div>
+      <div class="form-group grow">
+        <label for="m${n}FirstName">First given name</label>
+        <input type="text" id="m${n}FirstName" name="m${n}FirstName">
+      </div>
+      <div class="form-group grow">
+        <label for="m${n}OtherNames">Other given names</label>
+        <input type="text" id="m${n}OtherNames" name="m${n}OtherNames">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group fixed180">
+        <label for="m${n}TFN">Tax file number</label>
+        <input type="text" id="m${n}TFN" name="m${n}TFN" maxlength="9">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group grow">
+        <label for="m${n}AccumValue">X1 – Accumulation phase value ($)</label>
+        <div class="dollar-wrap">
+          <input type="number" id="m${n}AccumValue" name="m${n}AccumValue" step="1" min="0">
+        </div>
+      </div>
+      <div class="form-group grow">
+        <label for="m${n}RetirValue">X2 – Retirement phase value ($)</label>
+        <div class="dollar-wrap">
+          <input type="number" id="m${n}RetirValue" name="m${n}RetirValue" step="1" min="0">
+        </div>
+      </div>
+      <div class="form-group grow">
+        <label for="m${n}LRBA">Outstanding LRBA amount ($)</label>
+        <div class="dollar-wrap">
+          <input type="number" id="m${n}LRBA" name="m${n}LRBA" step="1" min="0">
+        </div>
+      </div>
+    </div>
+  </fieldset>`);
+}
+buildMemberSection(1);
+buildMemberSection(2);
+</script>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION H — Assets and liabilities
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section H: Assets and liabilities</h2>
+
+<h3>1 ASSETS</h3>
+
+<fieldset>
+  <legend>15a – Australian managed investments</legend>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="listedTrusts">A – Listed trusts ($)</label>
+      <div class="dollar-wrap"><input type="number" id="listedTrusts" name="listedTrusts" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="unlistedTrusts">B – Unlisted trusts ($)</label>
+      <div class="dollar-wrap"><input type="number" id="unlistedTrusts" name="unlistedTrusts" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="insurancePolicy">C – Insurance policy ($)</label>
+      <div class="dollar-wrap"><input type="number" id="insurancePolicy" name="insurancePolicy" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="otherManagedInv">D – Other managed investments ($)</label>
+      <div class="dollar-wrap"><input type="number" id="otherManagedInv" name="otherManagedInv" step="1" min="0"></div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>15b – Australian direct investments</legend>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="cashTermDeposits">E – Cash and term deposits ($)</label>
+      <div class="dollar-wrap"><input type="number" id="cashTermDeposits" name="cashTermDeposits" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="australianShares">F – Australian shares ($)</label>
+      <div class="dollar-wrap"><input type="number" id="australianShares" name="australianShares" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="residentialProperty">G – Residential real property ($)</label>
+      <div class="dollar-wrap"><input type="number" id="residentialProperty" name="residentialProperty" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="nonResidentialProperty">H – Non-residential real property ($)</label>
+      <div class="dollar-wrap"><input type="number" id="nonResidentialProperty" name="nonResidentialProperty" step="1" min="0"></div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>15c – Other investments</legend>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="cryptoAssets">N – Crypto-assets ($)</label>
+      <div class="dollar-wrap"><input type="number" id="cryptoAssets" name="cryptoAssets" step="1" min="0"></div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>15d – Overseas direct investments</legend>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="overseasShares">P – Overseas shares ($)</label>
+      <div class="dollar-wrap"><input type="number" id="overseasShares" name="overseasShares" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="overseasNonResidProp">Q – Overseas non-residential real property ($)</label>
+      <div class="dollar-wrap"><input type="number" id="overseasNonResidProp" name="overseasNonResidProp" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="overseasResidProp">R – Overseas residential real property ($)</label>
+      <div class="dollar-wrap"><input type="number" id="overseasResidProp" name="overseasResidProp" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="overseasManagedInv">S – Overseas managed investments ($)</label>
+      <div class="dollar-wrap"><input type="number" id="overseasManagedInv" name="overseasManagedInv" step="1" min="0"></div>
+    </div>
+    <div class="form-group grow">
+      <label for="otherOverseasAssets">T – Other overseas assets ($)</label>
+      <div class="dollar-wrap"><input type="number" id="otherOverseasAssets" name="otherOverseasAssets" step="1" min="0"></div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>15e – In-house assets</legend>
+  <div class="check-row">
+    <label>A – Did the fund have in-house assets at year end?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q15e" value="No" checked> No</label>
+      <label><input type="radio" name="q15e" value="Yes"> Yes</label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="inHouseAssetValue">In-house asset value ($)</label>
+      <div class="dollar-wrap"><input type="number" id="inHouseAssetValue" name="inHouseAssetValue" step="1" min="0"></div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>15f – Limited recourse borrowing arrangements (LRBA)</legend>
+  <div class="check-row">
+    <label>A – Were LRBA borrowings from a licensed financial institution?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q15fa" value="No" checked> No</label>
+      <label><input type="radio" name="q15fa" value="Yes"> Yes</label>
+    </div>
+  </div>
+  <div class="check-row">
+    <label>B – Did members or related parties use personal guarantees or other security?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="q15fb" value="No" checked> No</label>
+      <label><input type="radio" name="q15fb" value="Yes"> Yes</label>
+    </div>
+  </div>
+</fieldset>
+
+<h3>2 LIABILITIES</h3>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="totalMemberClosing">W – Total member closing account balances ($)</label>
+    <div class="dollar-wrap"><input type="number" id="totalMemberClosing" name="totalMemberClosing" step="1" min="0"></div>
+  </div>
+  <div class="form-group grow">
+    <label for="reserveAccounts">X – Reserve accounts ($)</label>
+    <div class="dollar-wrap"><input type="number" id="reserveAccounts" name="reserveAccounts" step="1" min="0"></div>
+  </div>
+  <div class="form-group grow">
+    <label for="otherLiabilities">Y – Other liabilities ($)</label>
+    <div class="dollar-wrap"><input type="number" id="otherLiabilities" name="otherLiabilities" step="1" min="0"></div>
+  </div>
+</div>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION I — TOFA
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section I: Taxation of financial arrangements (TOFA)</h2>
+<div class="form-row">
+  <div class="form-group grow">
+    <label for="tofaGains">H – Total TOFA gains ($)</label>
+    <div class="dollar-wrap"><input type="number" id="tofaGains" name="tofaGains" step="1" min="0"></div>
+  </div>
+  <div class="form-group grow">
+    <label for="tofaLosses">I – Total TOFA losses ($)</label>
+    <div class="dollar-wrap"><input type="number" id="tofaLosses" name="tofaLosses" step="1" min="0"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION J — Other information
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section J: Other information</h2>
+<div class="form-row">
+  <div class="form-group fixed120">
+    <label for="familyTrustElecA">A – Family trust election year (e.g. 2024)</label>
+    <input type="text" id="familyTrustElecA" name="familyTrustElecA" maxlength="4">
+  </div>
+  <div class="form-group fixed80">
+    <label for="familyTrustElecB">B – Revoke (R) or Vary (V)</label>
+    <input type="text" id="familyTrustElecB" name="familyTrustElecB" maxlength="1">
+  </div>
+</div>
+<div class="form-row">
+  <div class="form-group fixed120">
+    <label for="interposedElecC">C – Interposed entity election year</label>
+    <input type="text" id="interposedElecC" name="interposedElecC" maxlength="4">
+  </div>
+  <div class="form-group fixed80">
+    <label for="interposedElecD">D – Revoke (R)</label>
+    <input type="text" id="interposedElecD" name="interposedElecD" maxlength="1">
+  </div>
+</div>
+
+<div class="tfn-bar">Tax File Number</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION K — Declarations
+═══════════════════════════════════════════════════════════════ -->
+<h2>Section K: Declarations</h2>
+
+<fieldset>
+  <legend>Trustee's or Director's Declaration</legend>
+  <p class="small">I declare that the current trustees or directors have authorised this annual return, I have received a copy of the audit report, and the information is true and correct.</p>
+  <div class="sig-box"></div>
+  <p class="small" style="margin-top:4px;">Authorised trustee's / director's / public officer's signature</p>
+
+  <h3 style="margin-top:10px;">Preferred trustee or director contact details</h3>
+  <div class="form-row">
+    <div class="form-group fixed80">
+      <label for="trusteeTitle">Title</label>
+      <select id="trusteeTitle" name="trusteeTitle">
+        <option></option><option>Mr</option><option>Mrs</option>
+        <option>Miss</option><option>Ms</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group grow">
+      <label for="trusteeFamilyName">Family name</label>
+      <input type="text" id="trusteeFamilyName" name="trusteeFamilyName">
+    </div>
+    <div class="form-group grow">
+      <label for="trusteeFirstName">First given name</label>
+      <input type="text" id="trusteeFirstName" name="trusteeFirstName">
+    </div>
+    <div class="form-group grow">
+      <label for="trusteeOtherNames">Other given names</label>
+      <input type="text" id="trusteeOtherNames" name="trusteeOtherNames">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group quarter">
+      <label for="trusteeSigDay">Day</label>
+      <input type="text" id="trusteeSigDay" name="trusteeSigDay" maxlength="2" placeholder="DD">
+    </div>
+    <div class="form-group quarter">
+      <label for="trusteeSigMonth">Month</label>
+      <input type="text" id="trusteeSigMonth" name="trusteeSigMonth" maxlength="2" placeholder="MM">
+    </div>
+    <div class="form-group quarter">
+      <label for="trusteeSigYear">Year</label>
+      <input type="text" id="trusteeSigYear" name="trusteeSigYear" maxlength="4" placeholder="YYYY">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="trusteePhone">Phone number</label>
+      <input type="tel" id="trusteePhone" name="trusteePhone">
+    </div>
+    <div class="form-group grow">
+      <label for="trusteeEmail">Email address</label>
+      <input type="email" id="trusteeEmail" name="trusteeEmail">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="nonIndivTrusteeName">Non-individual trustee name (if applicable)</label>
+      <input type="text" id="nonIndivTrusteeName" name="nonIndivTrusteeName">
+    </div>
+    <div class="form-group fixed180">
+      <label for="nonIndivTrusteeABN">ABN of non-individual trustee</label>
+      <input type="text" id="nonIndivTrusteeABN" name="nonIndivTrusteeABN" maxlength="11">
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Tax Agent's Declaration</legend>
+  <p class="small">I declare that this return has been prepared from information provided by the trustees and that the trustees have authorised lodgment.</p>
+  <div class="sig-box"></div>
+  <p class="small" style="margin-top:4px;">Tax agent's signature</p>
+
+  <div class="form-row">
+    <div class="form-group fixed80">
+      <label for="agentTitle">Title</label>
+      <select id="agentTitle" name="agentTitle">
+        <option></option><option>Mr</option><option>Mrs</option>
+        <option>Miss</option><option>Ms</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group grow">
+      <label for="agentFamilyName">Family name</label>
+      <input type="text" id="agentFamilyName" name="agentFamilyName">
+    </div>
+    <div class="form-group grow">
+      <label for="agentFirstName">First given name</label>
+      <input type="text" id="agentFirstName" name="agentFirstName">
+    </div>
+    <div class="form-group grow">
+      <label for="agentOtherNames">Other given names</label>
+      <input type="text" id="agentOtherNames" name="agentOtherNames">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group quarter">
+      <label for="agentSigDay">Day</label>
+      <input type="text" id="agentSigDay" name="agentSigDay" maxlength="2" placeholder="DD">
+    </div>
+    <div class="form-group quarter">
+      <label for="agentSigMonth">Month</label>
+      <input type="text" id="agentSigMonth" name="agentSigMonth" maxlength="2" placeholder="MM">
+    </div>
+    <div class="form-group quarter">
+      <label for="agentSigYear">Year</label>
+      <input type="text" id="agentSigYear" name="agentSigYear" maxlength="4" placeholder="YYYY">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group grow">
+      <label for="agentPractice">Tax agent's practice</label>
+      <input type="text" id="agentPractice" name="agentPractice">
+    </div>
+    <div class="form-group grow">
+      <label for="agentPhone">Phone number</label>
+      <input type="tel" id="agentPhone" name="agentPhone">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group fixed180">
+      <label for="agentRefNumber">Reference number</label>
+      <input type="text" id="agentRefNumber" name="agentRefNumber">
+    </div>
+    <div class="form-group fixed180">
+      <label for="agentTaxAgentNumber">Tax agent number</label>
+      <input type="text" id="agentTaxAgentNumber" name="agentTaxAgentNumber">
+    </div>
+  </div>
+</fieldset>
+
+<!-- Save as HTML button -->
+<div class="no-print" style="margin-top:20px;text-align:center;">
+  <button type="button" onclick="saveAsHTML()" style="padding:8px 20px;font-size:11pt;cursor:pointer;">
+    💾 Save filled form as HTML
+  </button>
+  &nbsp;
+  <button type="button" onclick="window.print()" style="padding:8px 20px;font-size:11pt;cursor:pointer;">
+    🖨️ Print / Save as PDF
+  </button>
+</div>
+
+</form>
+
+<script>
+// ── Save-as-HTML: serialises all field values into a new HTML file ──────────
+function saveAsHTML() {
+  const form = document.getElementById('smsfForm');
+  const clone = document.documentElement.cloneNode(true);
+
+  // Remove the save/print buttons in the saved copy
+  clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+  // Bake current input values into the clone so they appear as defaults
+  const liveInputs  = form.querySelectorAll('input, select, textarea');
+  const cloneInputs = clone.querySelectorAll('input, select, textarea');
+
+  liveInputs.forEach((el, i) => {
+    const c = cloneInputs[i];
+    if (!c) return;
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      if (el.checked) c.setAttribute('checked', 'checked');
+      else c.removeAttribute('checked');
+    } else if (el.tagName === 'SELECT') {
+      c.value = el.value;
+      Array.from(c.options).forEach(opt => {
+        opt.selected = opt.value === el.value;
+        if (opt.selected) opt.setAttribute('selected', 'selected');
+        else opt.removeAttribute('selected');
+      });
+    } else {
+      c.setAttribute('value', el.value);
+    }
+  });
+
+  const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SMSF_Annual_Return_2024_filled.html';
+  a.click();
+}
+</script>
+
+</body>
+</html>

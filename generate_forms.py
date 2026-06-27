@@ -229,7 +229,7 @@ def draw_tfn_header(pdf, value):
     height = 0.9 * cm
     x = PAGE_WIDTH - MARGIN - width
     y = PAGE_HEIGHT - MARGIN + 0.15 * cm - height
-    pdf.setFont(LABEL_SIZE and BODY_FONT, LABEL_SIZE)
+    pdf.setFont(BODY_FONT, LABEL_SIZE)
     pdf.drawString(x, y + height + 1, "Tax File Number")
     pdf.rect(x + 2.4 * cm, y, width - 2.4 * cm, height, stroke=1, fill=0)
     pdf.setFont(BODY_FONT, BODY_SIZE)
@@ -928,7 +928,8 @@ def main():
             output_path = output_dir / f"smsf_return_{members}members_{index}.pdf"
             tfn_value = build_pdf(output_path, members)
             relative_path = os.path.relpath(output_path, Path(__file__).resolve().parent)
-            print(f"Generated: {relative_path}  ({members} members, TFN: {tfn_value})")
+            summary_tfn = "Provided" if tfn_value == "Provided" else "Recorded"
+            print(f"Generated: {relative_path}  ({members} members, TFN: {summary_tfn})")
             generated.append(output_path)
 
     print("\nAll 12 PDFs generated in the 'output' folder.")

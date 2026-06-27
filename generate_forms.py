@@ -23,8 +23,10 @@ TITLE_SIZE = 16
 BOX_HEIGHT = 15
 FIELD_GAP = 18
 TOTAL_PAGES = 13
-MIN_CLOSING_BALANCE = 50000.0
+MAX_MEMBERS = 6
 LEVY_AMOUNTS = (259, 518)
+SIDE_FIELD_OFFSET = 5.45 * cm
+SIDE_FIELD_WIDTH = 1.95 * cm
 
 TITLES = ["Mr", "Mrs", "Ms", "Dr", "Miss"]
 FIRST_NAMES = [
@@ -325,7 +327,7 @@ def generate_member(index):
     outward = 0.0 if random.random() < 0.65 else round(random.uniform(5000, 100000), 2)
     lump_sum = 0.0 if random.random() < 0.75 else round(random.uniform(5000, 75000), 2)
     income_stream = 0.0 if random.random() < 0.72 else round(random.uniform(5000, 65000), 2)
-    closing = max(MIN_CLOSING_BALANCE, opening + total_contributions + allocated + inward - outward - lump_sum - income_stream)
+    closing = max(0.0, opening + total_contributions + allocated + inward - outward - lump_sum - income_stream)
 
     retirement_total = 0.0 if random.random() < 0.55 else round(closing * random.uniform(0.15, 0.55), 2)
     cdbis = 0.0 if retirement_total == 0 else round(retirement_total * random.uniform(0.0, 0.35), 2)
@@ -431,11 +433,11 @@ def build_form_data(num_members):
         right, right_numeric = maybe_numeric(0, 15000, whole=True, blank_probability=0.5)
         deduction_pairs[f"{code}1"] = left
         deduction_pairs[f"{code}2"] = right
-        deduction_total += int(left_numeric)
-        nondeductible_total += int(right_numeric)
+        deduction_total += int(round(left_numeric))
+        nondeductible_total += int(round(right_numeric))
     m1, m1_numeric = maybe_numeric(0, 12000, whole=True, blank_probability=0.45)
     deduction_pairs["M1"] = m1
-    deduction_total += int(m1_numeric)
+    deduction_total += int(round(m1_numeric))
 
     taxable_income = max(0, int(round(assessable_income)) - deduction_total)
     tax_on_income = int(round(taxable_income * 0.15))
@@ -460,7 +462,9 @@ def build_form_data(num_members):
     levy = random.choice(LEVY_AMOUNTS)
     levy_adjustment_m = random.randint(0, 500)
     levy_adjustment_n = random.randint(0, 500)
-    amount_due = tax_payable + interest_charge + levy + levy_adjustment_m - eligible_credit_total - tax_offset_refunds - payg_instalments - levy_adjustment_n
+    total_charges = tax_payable + interest_charge + levy + levy_adjustment_m
+    total_credits = eligible_credit_total + tax_offset_refunds + payg_instalments + levy_adjustment_n
+    amount_due = total_charges - total_credits
 
     members = [generate_member(i) for i in range(num_members)]
 
@@ -726,7 +730,18 @@ def page_five(pdf, data):
     y = t(2.5 * cm)
     for code, label in row_specs:
         draw_currency_field(pdf, left_x, y, column_width, f"{code} {label}", data["deductions"].get(code, ""))
-        partner_code = code.replace("1", "2") if code != "M1" else ""
+        partner_code = {
+            "A1": "A2",
+            "B1": "B2",
+            "D1": "D2",
+            "E1": "E2",
+            "F1": "F2",
+            "H1": "H2",
+            "I1": "I2",
+            "J1": "J2",
+            "U1": "U2",
+            "L1": "L2",
+        }.get(code, "")
         if partner_code:
             draw_currency_field(pdf, right_x, y, column_width, f"{partner_code} {label}", data["deductions"].get(partner_code, ""))
         y -= FIELD_GAP
@@ -844,7 +859,7 @@ def page_member(pdf, data, member_number):
         current_y = contrib_y - (index // 2) * FIELD_GAP
         draw_currency_field(pdf, current_x, current_y, 7.4 * cm, f"{code} {label}", value)
         if side_label:
-            draw_field(pdf, current_x + 5.45 * cm, current_y, 1.95 * cm, BOX_HEIGHT, side_label, side_value, align="center", fontsize=LABEL_SIZE)
+            draw_field(pdf, current_x + SIDE_FIELD_OFFSET, current_y, SIDE_FIELD_WIDTH, BOX_HEIGHT, side_label, side_value, align="center", fontsize=LABEL_SIZE)
 
     totals_y = contrib_y - 7 * FIELD_GAP - 4
     draw_currency_field(pdf, MARGIN, totals_y, 7.4 * cm, "N Total contributions", member["total_contributions"] if member else "")
@@ -911,10 +926,10 @@ def build_pdf(output_path, num_members):
     draw_footer(pdf, 7)
     pdf.showPage()
 
-    for member_number in range(1, 7):
+    for member_number in range(1, MAX_MEMBERS + 1):
         page_member(pdf, data, member_number)
         draw_footer(pdf, 7 + member_number)
-        if member_number != 6:
+        if member_number != MAX_MEMBERS:
             pdf.showPage()
 
     pdf.save()
@@ -926,7 +941,7 @@ def main():
     output_dir.mkdir(exist_ok=True)
 
     generated = []
-    for members in range(1, 7):
+    for members in range(1, MAX_MEMBERS + 1):
         for index in range(1, 3):
             output_path = output_dir / f"smsf_return_{members}members_{index}.pdf"
             tfn_value = build_pdf(output_path, members)

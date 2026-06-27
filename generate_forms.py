@@ -25,7 +25,6 @@ FIELD_GAP = 18
 TOTAL_PAGES = 13
 MIN_CLOSING_BALANCE = 50000.0
 LEVY_AMOUNTS = (259, 518)
-CLOSING_BALANCE_LABEL = "S Closing account balance"
 
 TITLES = ["Mr", "Mrs", "Ms", "Dr", "Miss"]
 FIRST_NAMES = [
@@ -213,7 +212,7 @@ def maybe_numeric(min_value, max_value, *, whole=True, blank_probability=0.35):
     return f"{value:,.2f}", value
 
 
-def measure(text):
+def format_value(text):
     return str(text) if text is not None else ""
 
 
@@ -236,7 +235,7 @@ def draw_tfn_header(pdf, value):
     pdf.drawString(x, y + height + 1, "Tax File Number")
     pdf.rect(x + 2.4 * cm, y, width - 2.4 * cm, height, stroke=1, fill=0)
     pdf.setFont(BODY_FONT, BODY_SIZE)
-    pdf.drawCentredString(x + 2.4 * cm + (width - 2.4 * cm) / 2, y + 0.28 * cm, measure(value))
+    pdf.drawCentredString(x + 2.4 * cm + (width - 2.4 * cm) / 2, y + 0.28 * cm, format_value(value))
 
 
 def draw_section_header(pdf, title, y):
@@ -257,11 +256,11 @@ def draw_field(pdf, x, y, width, height, label, value="", *, align="left", fonts
     padding = 3
     text_y = y + (height - fontsize) / 2 + 2
     if align == "right":
-        pdf.drawRightString(x + width - padding, text_y, measure(value))
+        pdf.drawRightString(x + width - padding, text_y, format_value(value))
     elif align == "center":
-        pdf.drawCentredString(x + width / 2, text_y, measure(value))
+        pdf.drawCentredString(x + width / 2, text_y, format_value(value))
     else:
-        pdf.drawString(x + padding, text_y, measure(value))
+        pdf.drawString(x + padding, text_y, format_value(value))
 
 
 def draw_currency_field(pdf, x, y, width, label, value="", *, large=False):
@@ -272,7 +271,7 @@ def draw_currency_field(pdf, x, y, width, label, value="", *, large=False):
     pdf.rect(x + 8, y, width - 8, BOX_HEIGHT if not large else BOX_HEIGHT + 4, stroke=1, fill=0)
     if value != "":
         text_y = y + 4 if not large else y + 6
-        pdf.drawRightString(x + width - 3, text_y, measure(value))
+        pdf.drawRightString(x + width - 3, text_y, format_value(value))
 
 
 def draw_checkbox(pdf, x, y, label, checked=False):
@@ -845,7 +844,7 @@ def page_member(pdf, data, member_number):
         current_y = contrib_y - (index // 2) * FIELD_GAP
         draw_currency_field(pdf, current_x, current_y, 7.4 * cm, f"{code} {label}", value)
         if side_label:
-            draw_field(pdf, current_x + 5.45 * cm, current_y, 1.95 * cm, BOX_HEIGHT, side_label, side_value, align="center", fontsize=7)
+            draw_field(pdf, current_x + 5.45 * cm, current_y, 1.95 * cm, BOX_HEIGHT, side_label, side_value, align="center", fontsize=LABEL_SIZE)
 
     totals_y = contrib_y - 7 * FIELD_GAP - 4
     draw_currency_field(pdf, MARGIN, totals_y, 7.4 * cm, "N Total contributions", member["total_contributions"] if member else "")
@@ -870,7 +869,7 @@ def page_member(pdf, data, member_number):
     draw_currency_field(pdf, MARGIN + 10.4 * cm, balances_y, 3.4 * cm, "S3 Retirement phase CDBIS", member["retirement_cdbis"] if member else "")
     draw_field(pdf, MARGIN + 14.2 * cm, balances_y, 1.1 * cm, BOX_HEIGHT, "TRIS", member["tris_count"] if member else "", align="center")
 
-    draw_currency_field(pdf, MARGIN, t(21.2 * cm), CONTENT_WIDTH, CLOSING_BALANCE_LABEL, member["closing_balance"] if member else "", large=True)
+    draw_currency_field(pdf, MARGIN, t(21.2 * cm), CONTENT_WIDTH, "S Closing account balance", member["closing_balance"] if member else "", large=True)
     draw_currency_field(pdf, MARGIN, t(22.6 * cm), 5.0 * cm, "X1 Accumulation phase value", member["x1"] if member else "")
     draw_currency_field(pdf, MARGIN + 5.4 * cm, t(22.6 * cm), 5.0 * cm, "X2 Retirement phase value", member["x2"] if member else "")
     draw_currency_field(pdf, MARGIN + 10.8 * cm, t(22.6 * cm), 4.5 * cm, "Y Outstanding LRBA amount", member["lrba"] if member else "")

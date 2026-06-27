@@ -23,6 +23,9 @@ TITLE_SIZE = 16
 BOX_HEIGHT = 15
 FIELD_GAP = 18
 TOTAL_PAGES = 13
+MIN_CLOSING_BALANCE = 50000.0
+LEVY_AMOUNTS = (259, 518)
+CLOSING_BALANCE_LABEL = "CLOSING ACCOUNT BALANCE S$"
 
 TITLES = ["Mr", "Mrs", "Ms", "Dr", "Miss"]
 FIRST_NAMES = [
@@ -202,7 +205,7 @@ def maybe_tfn():
 
 def maybe_numeric(min_value, max_value, *, whole=True, blank_probability=0.35):
     if random.random() < blank_probability:
-        return "", 0.0
+        return "", 0 if whole else 0.0
     if whole:
         value = random.randint(min_value, max_value)
         return f"{value:,}", float(value)
@@ -323,7 +326,7 @@ def generate_member(index):
     outward = 0.0 if random.random() < 0.65 else round(random.uniform(5000, 100000), 2)
     lump_sum = 0.0 if random.random() < 0.75 else round(random.uniform(5000, 75000), 2)
     income_stream = 0.0 if random.random() < 0.72 else round(random.uniform(5000, 65000), 2)
-    closing = max(50000.0, opening + total_contributions + allocated + inward - outward - lump_sum - income_stream)
+    closing = max(MIN_CLOSING_BALANCE, opening + total_contributions + allocated + inward - outward - lump_sum - income_stream)
 
     retirement_total = 0.0 if random.random() < 0.55 else round(closing * random.uniform(0.15, 0.55), 2)
     cdbis = 0.0 if retirement_total == 0 else round(retirement_total * random.uniform(0.0, 0.35), 2)
@@ -410,7 +413,8 @@ def build_form_data(num_members):
         ("T", 0, 25000),
     ]
     for code, minimum, maximum in income_specs:
-        shown, numeric = maybe_numeric(minimum, maximum, whole=True, blank_probability=0.25 if code in {"B", "C", "I"} else 0.45)
+        blank_probability = 0.25 if code in {"B", "C", "I"} else 0.45
+        shown, numeric = maybe_numeric(minimum, maximum, whole=True, blank_probability=blank_probability)
         income_values[code] = {"text": shown, "value": numeric}
 
     gross_income = sum(income_values[code]["value"] for code in ["B", "C", "X", "D", "F", "H", "I", "J", "K", "L", "M", "S", "T"])
@@ -454,7 +458,7 @@ def build_form_data(num_members):
     eligible_credit_total = sum(eligible_credits)
     tax_offset_refunds = random.randint(0, 3000)
     payg_instalments = random.randint(0, 4000)
-    levy = random.choice([259, 518])
+    levy = random.choice(LEVY_AMOUNTS)
     levy_adjustment_m = random.randint(0, 500)
     levy_adjustment_n = random.randint(0, 500)
     amount_due = tax_payable + interest_charge + levy + levy_adjustment_m - eligible_credit_total - tax_offset_refunds - payg_instalments - levy_adjustment_n
@@ -866,7 +870,7 @@ def page_member(pdf, data, member_number):
     draw_currency_field(pdf, MARGIN + 10.4 * cm, balances_y, 3.4 * cm, "S3 Retirement phase CDBIS", member["retirement_cdbis"] if member else "")
     draw_field(pdf, MARGIN + 14.2 * cm, balances_y, 1.1 * cm, BOX_HEIGHT, "TRIS", member["tris_count"] if member else "", align="center")
 
-    draw_currency_field(pdf, MARGIN, t(21.2 * cm), CONTENT_WIDTH, "CLOSING ACCOUNT BALANCE S$", member["closing_balance"] if member else "", large=True)
+    draw_currency_field(pdf, MARGIN, t(21.2 * cm), CONTENT_WIDTH, CLOSING_BALANCE_LABEL, member["closing_balance"] if member else "", large=True)
     draw_currency_field(pdf, MARGIN, t(22.6 * cm), 5.0 * cm, "X1 Accumulation phase value", member["x1"] if member else "")
     draw_currency_field(pdf, MARGIN + 5.4 * cm, t(22.6 * cm), 5.0 * cm, "X2 Retirement phase value", member["x2"] if member else "")
     draw_currency_field(pdf, MARGIN + 10.8 * cm, t(22.6 * cm), 4.5 * cm, "Y Outstanding LRBA amount", member["lrba"] if member else "")

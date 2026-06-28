@@ -5,28 +5,10 @@ import random
 from datetime import date, timedelta
 from pathlib import Path
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm
-from reportlab.pdfgen import canvas
+import pymupdf
 
-
-PAGE_WIDTH, PAGE_HEIGHT = A4
-MARGIN = 2 * cm
-CONTENT_WIDTH = PAGE_WIDTH - (2 * MARGIN)
-BODY_FONT = "Helvetica"
-BOLD_FONT = "Helvetica-Bold"
-BODY_SIZE = 9
-LABEL_SIZE = 7
-HEADER_SIZE = 11
-TITLE_SIZE = 16
-BOX_HEIGHT = 15
-FIELD_GAP = 18
-TOTAL_PAGES = 13
 MAX_MEMBERS = 6
 LEVY_AMOUNTS = (259, 518)
-SIDE_FIELD_OFFSET = 5.45 * cm
-SIDE_FIELD_WIDTH = 1.95 * cm
 
 TITLES = ["Mr", "Mrs", "Ms", "Dr", "Miss"]
 FIRST_NAMES = [
@@ -216,80 +198,6 @@ def maybe_numeric(min_value, max_value, *, whole=True, blank_probability=0.35):
 
 def format_value(text):
     return str(text) if text is not None else ""
-
-
-def t(value):
-    return PAGE_HEIGHT - MARGIN - value
-
-
-def draw_footer(pdf, page_number):
-    pdf.setFont(BODY_FONT, 8)
-    pdf.drawCentredString(PAGE_WIDTH / 2, 0.85 * cm, "OFFICIAL: Sensitive (when completed)")
-    pdf.drawRightString(PAGE_WIDTH - MARGIN, 0.85 * cm, f"Page {page_number}")
-
-
-def draw_tfn_header(pdf, value):
-    width = 6.2 * cm
-    height = 0.9 * cm
-    x = PAGE_WIDTH - MARGIN - width
-    y = PAGE_HEIGHT - MARGIN + 0.15 * cm - height
-    pdf.setFont(BODY_FONT, LABEL_SIZE)
-    pdf.drawString(x, y + height + 1, "Tax File Number")
-    pdf.rect(x + 2.4 * cm, y, width - 2.4 * cm, height, stroke=1, fill=0)
-    pdf.setFont(BODY_FONT, BODY_SIZE)
-    pdf.drawCentredString(x + 2.4 * cm + (width - 2.4 * cm) / 2, y + 0.28 * cm, format_value(value))
-
-
-def draw_section_header(pdf, title, y):
-    pdf.setFont(BOLD_FONT, HEADER_SIZE)
-    pdf.drawString(MARGIN, y, title)
-    pdf.setLineWidth(0.7)
-    pdf.line(MARGIN, y - 3, PAGE_WIDTH - MARGIN, y - 3)
-
-
-def draw_field(pdf, x, y, width, height, label, value="", *, align="left", fontsize=BODY_SIZE, bold=False):
-    pdf.setFont(BODY_FONT, LABEL_SIZE)
-    pdf.setFillColor(colors.black)
-    pdf.drawString(x, y + height + 2, label)
-    pdf.rect(x, y, width, height, stroke=1, fill=0)
-    if value == "":
-        return
-    pdf.setFont(BOLD_FONT if bold else BODY_FONT, fontsize)
-    padding = 3
-    text_y = y + (height - fontsize) / 2 + 2
-    if align == "right":
-        pdf.drawRightString(x + width - padding, text_y, format_value(value))
-    elif align == "center":
-        pdf.drawCentredString(x + width / 2, text_y, format_value(value))
-    else:
-        pdf.drawString(x + padding, text_y, format_value(value))
-
-
-def draw_currency_field(pdf, x, y, width, label, value="", *, large=False):
-    pdf.setFont(BODY_FONT, LABEL_SIZE)
-    pdf.drawString(x, y + BOX_HEIGHT + 2, label)
-    pdf.setFont(BOLD_FONT if large else BODY_FONT, BODY_SIZE if not large else 10)
-    pdf.drawString(x, y + 4, "$")
-    pdf.rect(x + 8, y, width - 8, BOX_HEIGHT if not large else BOX_HEIGHT + 4, stroke=1, fill=0)
-    if value != "":
-        text_y = y + 4 if not large else y + 6
-        pdf.drawRightString(x + width - 3, text_y, format_value(value))
-
-
-def draw_checkbox(pdf, x, y, label, checked=False):
-    size = 10
-    pdf.rect(x, y, size, size, stroke=1, fill=0)
-    if checked:
-        pdf.setFont(BOLD_FONT, 10)
-        pdf.drawCentredString(x + size / 2, y + 1, "X")
-    pdf.setFont(BODY_FONT, BODY_SIZE)
-    pdf.drawString(x + size + 4, y + 1, label)
-
-
-def draw_code_and_currency(pdf, x, y, width, label, value="", code_label="", code_value=""):
-    amount_width = width - 2.2 * cm
-    draw_currency_field(pdf, x, y, amount_width, label, value)
-    draw_field(pdf, x + amount_width + 0.25 * cm, y, 1.95 * cm, BOX_HEIGHT, code_label, code_value, align="center")
 
 
 def generate_member(index):
@@ -561,378 +469,200 @@ def build_form_data(num_members):
             "V": rand_whole(0, 50000),
         },
         "members": members,
+        "assets": _generate_assets(),
+        "liabilities": _generate_liabilities(members),
+        "declarations": _generate_declarations(),
     }
 
 
-def page_one(pdf, data):
-    pdf.setFont(BOLD_FONT, TITLE_SIZE)
-    pdf.drawRightString(PAGE_WIDTH - MARGIN, t(0.3 * cm), "Self-managed superannuation fund annual return 2024")
-
-    draw_section_header(pdf, "Section A — Fund information", t(1.6 * cm))
-
-    draw_field(pdf, MARGIN, t(2.8 * cm), 4.4 * cm, BOX_HEIGHT, "Tax file number (TFN)", data["tfn"])
-    draw_field(pdf, MARGIN + 4.9 * cm, t(2.8 * cm), CONTENT_WIDTH - 4.9 * cm, BOX_HEIGHT, "Name of self-managed superannuation fund (SMSF)", data["fund_name"])
-    draw_field(pdf, MARGIN, t(4.1 * cm), 4.4 * cm, BOX_HEIGHT, "Australian business number (ABN)", data["abn"])
-
-    draw_field(pdf, MARGIN, t(5.5 * cm), CONTENT_WIDTH, BOX_HEIGHT, "Current postal address", data["address"]["street"])
-    draw_field(pdf, MARGIN, t(6.8 * cm), 8.6 * cm, BOX_HEIGHT, "Suburb/town", data["address"]["suburb"])
-    draw_field(pdf, MARGIN + 9 * cm, t(6.8 * cm), 2.5 * cm, BOX_HEIGHT, "State", data["address"]["state"], align="center")
-    draw_field(pdf, MARGIN + 11.9 * cm, t(6.8 * cm), 3.0 * cm, BOX_HEIGHT, "Postcode", data["address"]["postcode"], align="center")
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(8.5 * cm), "Annual return status")
-    draw_checkbox(pdf, MARGIN, t(9.2 * cm), "A Amendment", data["annual_return_amendment"])
-    draw_checkbox(pdf, MARGIN + 6.2 * cm, t(9.2 * cm), "B First return for new SMSF", data["annual_return_first"])
+def _rand_asset_amount():
+    return maybe_numeric(10000, 2000000, whole=True)[0]
 
 
-def page_two(pdf, data):
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, "Section 6 — SMSF auditor", t(0.7 * cm))
-
-    auditor = data["auditor"]
-    draw_field(pdf, MARGIN, t(1.9 * cm), 6 * cm, BOX_HEIGHT, "Family name", auditor["family_name"])
-    draw_field(pdf, MARGIN + 6.4 * cm, t(1.9 * cm), 5.5 * cm, BOX_HEIGHT, "First given name", auditor["first_name"])
-    draw_field(pdf, MARGIN + 12.2 * cm, t(1.9 * cm), 3.1 * cm, BOX_HEIGHT, "SMSF Auditor Number", auditor["san"], align="center")
-    draw_field(pdf, MARGIN, t(3.2 * cm), 4.4 * cm, BOX_HEIGHT, "Phone", auditor["phone"])
-    draw_field(pdf, MARGIN + 4.8 * cm, t(3.2 * cm), CONTENT_WIDTH - 4.8 * cm, BOX_HEIGHT, "Postal address", auditor["postal_address"])
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(4.7 * cm), "Audit qualified")
-    draw_checkbox(pdf, MARGIN, t(5.4 * cm), "B Part A qualified — Yes", auditor["part_a_qualified"])
-    draw_checkbox(pdf, MARGIN + 6.1 * cm, t(5.4 * cm), "No", not auditor["part_a_qualified"])
-    draw_checkbox(pdf, MARGIN, t(6.2 * cm), "C Part B qualified — Yes", auditor["part_b_qualified"])
-    draw_checkbox(pdf, MARGIN + 6.1 * cm, t(6.2 * cm), "No", not auditor["part_b_qualified"])
-    draw_checkbox(pdf, MARGIN, t(7.0 * cm), "D Issues rectified — Yes", auditor["part_b_rectified"])
-    draw_checkbox(pdf, MARGIN + 6.1 * cm, t(7.0 * cm), "No", not auditor["part_b_rectified"])
-
-    draw_section_header(pdf, "Section 7 — EFT details", t(8.5 * cm))
-    eft = data["eft"]
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(9.4 * cm), "A Fund's financial institution")
-    draw_field(pdf, MARGIN, t(10.3 * cm), 3.2 * cm, BOX_HEIGHT, "BSB", eft["fund_bsb"], align="center")
-    draw_field(pdf, MARGIN + 3.6 * cm, t(10.3 * cm), 4.8 * cm, BOX_HEIGHT, "Account number", eft["fund_account"], align="center")
-    draw_field(pdf, MARGIN + 8.8 * cm, t(10.3 * cm), 6.5 * cm, BOX_HEIGHT, "Account name", eft["fund_account_name"])
-    draw_checkbox(pdf, MARGIN, t(11.2 * cm), "Tax refunds to this account", eft["fund_refund_check"])
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(12.3 * cm), "B Financial institution for tax refunds")
-    draw_field(pdf, MARGIN, t(13.2 * cm), 3.2 * cm, BOX_HEIGHT, "BSB", eft["refund_bsb"], align="center")
-    draw_field(pdf, MARGIN + 3.6 * cm, t(13.2 * cm), 4.8 * cm, BOX_HEIGHT, "Account number", eft["refund_account"], align="center")
-    draw_field(pdf, MARGIN + 8.8 * cm, t(13.2 * cm), 6.5 * cm, BOX_HEIGHT, "Account name", eft["refund_account_name"])
-    draw_field(pdf, MARGIN, t(14.5 * cm), CONTENT_WIDTH, BOX_HEIGHT, "C Electronic service address alias (ESA)", eft["esa"])
+def _generate_assets():
+    a = _rand_asset_amount
+    return {
+        "15a-a": a(),
+        "15a-b": a(),
+        "15a-c": a(),
+        "15a-d": a(),
+        "15b-e": a(),
+        "15b-f": a(),
+        "15b-g": a(),
+        "15b-h": a(),
+        "15b-i": a(),
+        "15b-j1": a(),
+        "15b-j2": a(),
+        "15b-js": a(),
+        "15b-j4": a(),
+        "15b-j5": a(),
+        "15b-j6": a(),
+        "15b-j7": a(),
+        "15b-j": a(),
+        "15b-k": a(),
+        "15b-l": a(),
+        "15b-m": a(),
+        "15b-0": a(),
+        "15c-n": a(),
+        "Text34": a(),
+        "Text35": a(),
+        "Text36": a(),
+        "Text37": a(),
+        "Text38": a(),
+        "Text39": a(),
+        "15e": a(),
+    }
 
 
-def page_three(pdf, data):
-    status = data["status"]
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, "Sections 8, 9 and 10 — Status and exempt current pension income", t(0.7 * cm))
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(1.8 * cm), "Section 8 — Status of SMSF")
-    draw_checkbox(pdf, MARGIN, t(2.6 * cm), "A Type — Regulated", status["type"] == "regulated")
-    draw_checkbox(pdf, MARGIN + 6.2 * cm, t(2.6 * cm), "Other", status["type"] != "regulated")
-    draw_checkbox(pdf, MARGIN, t(3.4 * cm), "B Benefit structure — Accumulation", status["benefit_structure"] == "accumulation")
-    draw_checkbox(pdf, MARGIN + 8.2 * cm, t(3.4 * cm), "Mixture", status["benefit_structure"] != "accumulation")
-    draw_checkbox(pdf, MARGIN, t(4.2 * cm), "C Super co-contribution received", status["co_contribution"])
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(5.3 * cm), "Section 9 — Was the fund wound up")
-    draw_checkbox(pdf, MARGIN, t(6.1 * cm), "No", not status["wound_up"])
-    draw_checkbox(pdf, MARGIN + 3 * cm, t(6.1 * cm), "Yes", status["wound_up"])
-    draw_field(pdf, MARGIN + 5.2 * cm, t(6.0 * cm), 3.3 * cm, BOX_HEIGHT, "Date", status["wound_up_date"], align="center")
-    draw_checkbox(pdf, MARGIN + 9.1 * cm, t(6.1 * cm), "Tax obligations met — Yes", status["tax_obligations_met"])
-    draw_checkbox(pdf, MARGIN + 14.0 * cm, t(6.1 * cm), "No", not status["tax_obligations_met"])
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(7.5 * cm), "Section 10 — Exempt current pension income")
-    draw_checkbox(pdf, MARGIN, t(8.3 * cm), "No", not status["ecpi_yes"])
-    draw_checkbox(pdf, MARGIN + 3 * cm, t(8.3 * cm), "Yes", status["ecpi_yes"])
-    draw_currency_field(pdf, MARGIN, t(9.4 * cm), 5.4 * cm, "A Amount", status["ecpi_amount"])
-    draw_checkbox(pdf, MARGIN + 6.2 * cm, t(9.7 * cm), "B Segregated", status["ecpi_method"] == "segregated")
-    draw_checkbox(pdf, MARGIN + 10.1 * cm, t(9.7 * cm), "C Unsegregated", status["ecpi_method"] == "unsegregated")
-    draw_checkbox(pdf, MARGIN, t(10.8 * cm), "D Actuarial certificate obtained", status["actuarial_certificate"])
+def _generate_liabilities(members):
+    v1, v1_num = maybe_numeric(0, 500000, whole=True)
+    v2, v2_num = maybe_numeric(0, 200000, whole=True)
+    v3, v3_num = maybe_numeric(0, 100000, whole=True)
+    v_total = int(v1_num + v2_num + v3_num)
+    members_total = int(sum(
+        float(m["closing_balance"].replace(",", ""))
+        for m in members
+    ))
+    return {
+        "16-v1": v1,
+        "16-v2": v2,
+        "16-v3": v3,
+        "16v": f"{v_total:,}" if v_total else "",
+        "16w": f"{members_total:,}",
+        "16x": maybe_numeric(0, 400000, whole=True)[0],
+        "16y": maybe_numeric(0, 300000, whole=True)[0],
+        "16z": maybe_numeric(0, 1000000, whole=True)[0],
+    }
 
 
-def draw_grid_page(pdf, data, title, rows, *, y_start=1.8 * cm, row_gap=0.98 * cm, columns=3):
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, title, t(0.7 * cm))
-    col_width = CONTENT_WIDTH / columns
-    field_width = col_width - 0.25 * cm
-    for index, row in enumerate(rows):
-        col = index % columns
-        line = index // columns
-        x = MARGIN + col * col_width
-        y = t(y_start + line * row_gap)
-        code = row["code"]
-        label = row["label"]
-        value = row["value"]
-        if row.get("currency", True):
-            draw_currency_field(pdf, x, y, field_width, f"{code} {label}", value)
-        else:
-            draw_field(pdf, x, y, field_width, BOX_HEIGHT, f"{code} {label}", value, align="right")
+def _generate_declarations():
+    trustee_first, trustee_last = rand_name()
+    trustee_other = random.choice([n for n in FIRST_NAMES if n != trustee_first])
+    is_corporate = random.random() < 0.4
+    agent_first, agent_last = rand_name()
+    agent_other = random.choice([n for n in FIRST_NAMES if n != agent_first])
+    tan_number = str(random.randint(10000000, 99999999))
+    return {
+        "trustee-family-name": trustee_last,
+        "trustee-first-name": trustee_first,
+        "trustee-other-name": trustee_other,
+        "trustee-phone": rand_phone(),
+        "trustee-email": rand_email(trustee_first, trustee_last),
+        "trustee-corporate": f"{trustee_last} Pty Ltd" if is_corporate else "",
+        "trustee-corp-abn": rand_abn() if is_corporate else "",
+        "tax-agent-family-name": agent_last,
+        "tax-agent-first-name": agent_first,
+        "tax-agent-other-name": agent_other,
+        # NOTE: "Tax agents practice" is the exact field name defined in the PDF template.
+        "Tax agents practice": random.choice(PRACTICES),
+        "tan-phone": rand_phone(),
+        "tan-ref": f"REF{random.randint(10000, 99999)}",
+        "tan": tan_number,
+    }
 
 
-def page_four(pdf, data):
-    rows = [
-        {"code": "A", "label": "Net capital gain", "value": data["income"]["A"]["text"]},
-        {"code": "B", "label": "Gross rent", "value": data["income"]["B"]["text"]},
-        {"code": "C", "label": "Gross interest", "value": data["income"]["C"]["text"]},
-        {"code": "X", "label": "Forestry managed investment scheme income", "value": data["income"]["X"]["text"]},
-        {"code": "D1", "label": "Foreign source income", "value": data["income"]["D1"]["text"]},
-        {"code": "D", "label": "Other net foreign income", "value": data["income"]["D"]["text"]},
-        {"code": "E", "label": "Franking credits NZ", "value": data["income"]["E"]["text"]},
-        {"code": "F", "label": "Transfers from foreign funds", "value": data["income"]["F"]["text"]},
-        {"code": "H", "label": "Gross payments where ABN not quoted", "value": data["income"]["H"]["text"]},
-        {"code": "R1", "label": "Contributions included in assessable income", "value": data["income"]["R1"]["text"]},
-        {"code": "R2", "label": "Low tax contributions", "value": data["income"]["R2"]["text"]},
-        {"code": "R3", "label": "Capital gains tax cap amounts", "value": data["income"]["R3"]["text"]},
-        {"code": "R6", "label": "Other concessional contributions", "value": data["income"]["R6"]["text"]},
-        {"code": "U1", "label": "Non-arm's length income component 1", "value": data["income"]["U1"]["text"]},
-        {"code": "U2", "label": "Non-arm's length income component 2", "value": data["income"]["U2"]["text"]},
-        {"code": "U3", "label": "Non-arm's length income component 3", "value": data["income"]["U3"]["text"]},
-        {"code": "I", "label": "Trust distributions", "value": data["income"]["I"]["text"]},
-        {"code": "J", "label": "Partnership distributions", "value": data["income"]["J"]["text"]},
-        {"code": "K", "label": "Other Australian income", "value": data["income"]["K"]["text"]},
-        {"code": "L", "label": "Listed trust distributions", "value": data["income"]["L"]["text"]},
-        {"code": "M", "label": "Unlisted trust distributions", "value": data["income"]["M"]["text"]},
-        {"code": "S", "label": "Other income", "value": data["income"]["S"]["text"]},
-        {"code": "T", "label": "Assessable income changed tax status", "value": data["income"]["T"]["text"]},
-        {"code": "W", "label": "Gross income", "value": data["gross_income"]},
-        {"code": "Y", "label": "Exempt current pension income", "value": data["ecpi_total"]},
-        {"code": "V", "label": "Total assessable income", "value": data["assessable_income"]},
-    ]
-    draw_grid_page(pdf, data, "Section B — Income (Section 11)", rows)
+def _set_field(page, field_name, value):
+    """Set a text field value on a PDF page."""
+    for widget in page.widgets():
+        if widget.field_name == field_name:
+            widget.field_value = str(value) if value is not None else ""
+            widget.update()
+            return
 
 
-def page_five(pdf, data):
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, "Section C — Deductions (Section 12)", t(0.7 * cm))
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    left_x = MARGIN
-    right_x = MARGIN + CONTENT_WIDTH / 2 + 0.2 * cm
-    column_width = CONTENT_WIDTH / 2 - 0.4 * cm
-    pdf.drawString(left_x, t(1.6 * cm), "DEDUCTIONS")
-    pdf.drawString(right_x, t(1.6 * cm), "NON-DEDUCTIBLE EXPENSES")
-
-    row_specs = [
-        ("A1", "Management and administration"),
-        ("B1", "Investment expenses"),
-        ("D1", "Audit fees"),
-        ("E1", "Actuarial fees"),
-        ("F1", "ASIC fees"),
-        ("H1", "Trustee liability insurance"),
-        ("I1", "Supervisory levy"),
-        ("J1", "Management and custodial"),
-        ("U1", "Non-arm's length expense"),
-        ("L1", "Interest expenses"),
-        ("M1", "Other allowable deductions"),
-    ]
-    y = t(2.5 * cm)
-    for code, label in row_specs:
-        draw_currency_field(pdf, left_x, y, column_width, f"{code} {label}", data["deductions"].get(code, ""))
-        partner_code = {
-            "A1": "A2",
-            "B1": "B2",
-            "D1": "D2",
-            "E1": "E2",
-            "F1": "F2",
-            "H1": "H2",
-            "I1": "I2",
-            "J1": "J2",
-            "U1": "U2",
-            "L1": "L2",
-        }.get(code, "")
-        if partner_code:
-            draw_currency_field(pdf, right_x, y, column_width, f"{partner_code} {label}", data["deductions"].get(partner_code, ""))
-        y -= FIELD_GAP
-
-    y -= 6
-    draw_currency_field(pdf, left_x, y, column_width, "N Total deductions", data["deduction_total"])
-    draw_currency_field(pdf, right_x, y, column_width, "Y Total non-deductible", data["nondeductible_total"])
-    y -= FIELD_GAP
-    draw_currency_field(pdf, left_x, y, column_width, "O Taxable income or loss", data["taxable_income"])
-    draw_currency_field(pdf, right_x, y, column_width, "Z Total SMSF expenses", data["expense_total"])
-
-
-def page_six(pdf, data):
-    rows = [
-        {"code": "A", "label": "Taxable income", "value": data["tax"]["A"]},
-        {"code": "T1", "label": "Tax on taxable income", "value": data["tax"]["T1"]},
-        {"code": "J", "label": "Tax on no-TFN contributions", "value": data["tax"]["J"]},
-        {"code": "B", "label": "Gross tax", "value": data["tax"]["B"]},
-        {"code": "C1", "label": "Tax offset 1", "value": data["tax"]["C1"]},
-        {"code": "C2", "label": "Tax offset 2", "value": data["tax"]["C2"]},
-        {"code": "C", "label": "Total tax offsets", "value": data["tax"]["C"]},
-        {"code": "T2", "label": "Subtotal 1", "value": data["tax"]["T2"]},
-        {"code": "D1", "label": "Carry forward tax offset 1", "value": data["tax"]["D1"]},
-        {"code": "D2", "label": "Carry forward tax offset 2", "value": data["tax"]["D2"]},
-        {"code": "D3", "label": "Carry forward tax offset 3", "value": data["tax"]["D3"]},
-        {"code": "D4", "label": "Carry forward tax offset 4", "value": data["tax"]["D4"]},
-        {"code": "D", "label": "Total carry forward tax offsets", "value": data["tax"]["D"]},
-        {"code": "T3", "label": "Subtotal 2", "value": data["tax"]["T3"]},
-        {"code": "E1", "label": "Refundable tax offset 1", "value": data["tax"]["E1"]},
-        {"code": "E2", "label": "Refundable tax offset 2", "value": data["tax"]["E2"]},
-        {"code": "E3", "label": "Refundable tax offset 3", "value": data["tax"]["E3"]},
-        {"code": "E4", "label": "Refundable tax offset 4", "value": data["tax"]["E4"]},
-        {"code": "E", "label": "Total refundable tax offsets", "value": data["tax"]["E"]},
-        {"code": "T5", "label": "Tax payable", "value": data["tax"]["T5"]},
-        {"code": "G", "label": "Section 102AAM interest charge", "value": data["tax"]["G"]},
-    ]
-    draw_grid_page(pdf, data, "Section D — Income tax calculation (Section 13)", rows, columns=3, row_gap=1.0 * cm)
-
-
-def page_seven(pdf, data):
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, "Section D continued and Section E — Losses", t(0.7 * cm))
-    continued = data["continued_tax"]
-    left_rows = [
-        ("H2", "Eligible credits 2"),
-        ("H3", "Eligible credits 3"),
-        ("H5", "Eligible credits 5"),
-        ("H6", "Eligible credits 6"),
-        ("H8", "Eligible credits 8"),
-        ("H", "Total eligible credits"),
-        ("I", "Tax offset refunds"),
-        ("K", "PAYG instalments"),
-        ("L", "Supervisory levy"),
-        ("M", "Supervisory levy adjustment"),
-        ("N", "Supervisory levy credit"),
-        ("S", "Amount due or refundable"),
-    ]
-    y = t(1.8 * cm)
-    for code, label in left_rows:
-        draw_currency_field(pdf, MARGIN, y, 7.3 * cm, f"{code} {label}", continued[code])
-        y -= FIELD_GAP
-
-    draw_checkbox(pdf, MARGIN + 8.1 * cm, t(2.3 * cm), "Refund amount", continued["refund"])
-    draw_checkbox(pdf, MARGIN + 8.1 * cm, t(3.1 * cm), "Amount due", not continued["refund"])
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN + 8.1 * cm, t(4.5 * cm), "Section 14 — Losses")
-    draw_currency_field(pdf, MARGIN + 8.1 * cm, t(5.5 * cm), 7.2 * cm, "U Tax losses carried forward", data["losses"]["U"])
-    draw_currency_field(pdf, MARGIN + 8.1 * cm, t(6.8 * cm), 7.2 * cm, "V Net capital losses carried forward", data["losses"]["V"])
-
-
-def page_member(pdf, data, member_number):
-    draw_tfn_header(pdf, data["tfn"])
-    draw_section_header(pdf, f"Section F — MEMBER {member_number}", t(0.7 * cm))
-    member = data["members"][member_number - 1] if member_number <= len(data["members"]) else None
-
-    titles = TITLES
-    x = MARGIN
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(x, t(1.7 * cm), "Title")
-    for i, title in enumerate(titles):
-        checked = bool(member and member["title"] == title)
-        draw_checkbox(pdf, x + i * 2.25 * cm, t(2.5 * cm), title, checked)
-
-    draw_field(pdf, MARGIN, t(3.6 * cm), 5.2 * cm, BOX_HEIGHT, "Family name", member["family_name"] if member else "")
-    draw_field(pdf, MARGIN + 5.6 * cm, t(3.6 * cm), 4.7 * cm, BOX_HEIGHT, "First given name", member["first_name"] if member else "")
-    draw_field(pdf, MARGIN + 10.7 * cm, t(3.6 * cm), 4.6 * cm, BOX_HEIGHT, "Other given names", member["other_names"] if member else "")
-    draw_field(pdf, MARGIN, t(4.9 * cm), 4.4 * cm, BOX_HEIGHT, "Member's TFN", member["tfn"] if member else "")
-    draw_field(pdf, MARGIN + 4.8 * cm, t(4.9 * cm), 4.0 * cm, BOX_HEIGHT, "Date of birth", member["dob"] if member else "")
-    draw_currency_field(pdf, MARGIN + 9.2 * cm, t(4.9 * cm), 6.1 * cm, "Opening account balance", member["opening_balance"] if member else "")
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN, t(6.1 * cm), "Contributions")
-    contrib_y = t(7.0 * cm)
-    contribution_rows = [
-        ("A", "Employer", member["contributions"]["A"] if member else "", member["employer_abn"] if member else "", "A1 Employer ABN"),
-        ("B", "Personal", member["contributions"]["B"] if member else "", "", ""),
-        ("C", "CGT small business retirement", member["contributions"]["C"] if member else "", "", ""),
-        ("D", "CGT small business 15-year", member["contributions"]["D"] if member else "", "", ""),
-        ("E", "Personal injury", member["contributions"]["E"] if member else "", "", ""),
-        ("F", "Spouse or child", member["contributions"]["F"] if member else "", "", ""),
-        ("G", "Other third party", member["contributions"]["G"] if member else "", "", ""),
-        ("H", "Primary residence disposal proceeds", member["contributions"]["H"] if member else "", member["residence_date"] if member else "", "H1 Date"),
-        ("I", "Assessable foreign super", member["contributions"]["I"] if member else "", "", ""),
-        ("J", "Non-assessable foreign super", member["contributions"]["J"] if member else "", "", ""),
-        ("K", "Transfer from reserve assessable", member["contributions"]["K"] if member else "", "", ""),
-        ("L", "Transfer from reserve non-assessable", member["contributions"]["L"] if member else "", "", ""),
-        ("T", "Contributions from non-complying funds", member["contributions"]["T"] if member else "", "", ""),
-        ("M", "Any other contributions", member["contributions"]["M"] if member else "", "", ""),
-    ]
-    left_x = MARGIN
-    right_x = MARGIN + 8.0 * cm
-    for index, (code, label, value, side_value, side_label) in enumerate(contribution_rows):
-        current_x = left_x if index % 2 == 0 else right_x
-        current_y = contrib_y - (index // 2) * FIELD_GAP
-        draw_currency_field(pdf, current_x, current_y, 7.4 * cm, f"{code} {label}", value)
-        if side_label:
-            draw_field(pdf, current_x + SIDE_FIELD_OFFSET, current_y, SIDE_FIELD_WIDTH, BOX_HEIGHT, side_label, side_value, align="center", fontsize=LABEL_SIZE)
-
-    totals_y = contrib_y - 7 * FIELD_GAP - 4
-    draw_currency_field(pdf, MARGIN, totals_y, 7.4 * cm, "N Total contributions", member["total_contributions"] if member else "")
-
-    pdf.setFont(BOLD_FONT, BODY_SIZE)
-    pdf.drawString(MARGIN + 8.0 * cm, t(15.8 * cm), "Other transactions")
-    other_y = t(16.6 * cm)
-    draw_currency_field(pdf, MARGIN + 8.0 * cm, other_y, 7.3 * cm, "O Allocated earnings/losses", member["allocated_earnings"] if member else "")
-    draw_checkbox(pdf, MARGIN + 13.0 * cm, other_y + 3, "Loss", bool(member and member["allocated_loss"]))
-    other_y -= FIELD_GAP
-    draw_currency_field(pdf, MARGIN + 8.0 * cm, other_y, 7.3 * cm, "P Inward rollovers", member["inward_rollovers"] if member else "")
-    other_y -= FIELD_GAP
-    draw_currency_field(pdf, MARGIN + 8.0 * cm, other_y, 7.3 * cm, "Q Outward rollovers", member["outward_rollovers"] if member else "")
-    other_y -= FIELD_GAP
-    draw_code_and_currency(pdf, MARGIN + 8.0 * cm, other_y, 7.3 * cm, "R1 Lump sum payments", member["lump_sum"] if member else "", "Code", member["lump_sum_code"] if member else "")
-    other_y -= FIELD_GAP
-    draw_code_and_currency(pdf, MARGIN + 8.0 * cm, other_y, 7.3 * cm, "R2 Income stream payments", member["income_stream"] if member else "", "Code", member["income_stream_code"] if member else "")
-
-    balances_y = t(19.7 * cm)
-    draw_currency_field(pdf, MARGIN, balances_y, 4.7 * cm, "S1 Accumulation phase account balance", member["accumulation_balance"] if member else "")
-    draw_currency_field(pdf, MARGIN + 5.1 * cm, balances_y, 4.9 * cm, "S2 Retirement phase non-CDBIS", member["retirement_non_cdbis"] if member else "")
-    draw_currency_field(pdf, MARGIN + 10.4 * cm, balances_y, 3.4 * cm, "S3 Retirement phase CDBIS", member["retirement_cdbis"] if member else "")
-    draw_field(pdf, MARGIN + 14.2 * cm, balances_y, 1.1 * cm, BOX_HEIGHT, "TRIS", member["tris_count"] if member else "", align="center")
-
-    draw_currency_field(pdf, MARGIN, t(21.2 * cm), CONTENT_WIDTH, "S Closing account balance", member["closing_balance"] if member else "", large=True)
-    draw_currency_field(pdf, MARGIN, t(22.6 * cm), 5.0 * cm, "X1 Accumulation phase value", member["x1"] if member else "")
-    draw_currency_field(pdf, MARGIN + 5.4 * cm, t(22.6 * cm), 5.0 * cm, "X2 Retirement phase value", member["x2"] if member else "")
-    draw_currency_field(pdf, MARGIN + 10.8 * cm, t(22.6 * cm), 4.5 * cm, "Y Outstanding LRBA amount", member["lrba"] if member else "")
+def _set_radio(page, field_name, export_value):
+    """Set a radio button group to the given export value."""
+    for widget in page.widgets():
+        if widget.field_name == field_name:
+            widget.field_value = export_value
+            widget.update()
+            return
 
 
 def build_pdf(output_path, num_members):
+    template_path = Path(__file__).parent / "SMSFAR 2024-smart form.pdf"
     data = build_form_data(num_members)
-    pdf = canvas.Canvas(str(output_path), pagesize=A4)
-    pdf.setTitle("Self-managed superannuation fund annual return 2024")
-    pdf.setStrokeColor(colors.black)
-    pdf.setFillColor(colors.black)
-    pdf.setLineWidth(0.5)
 
-    page_one(pdf, data)
-    draw_footer(pdf, 1)
-    pdf.showPage()
+    doc = pymupdf.open(str(template_path))
 
-    page_two(pdf, data)
-    draw_footer(pdf, 2)
-    pdf.showPage()
+    # Page 1 — Fund information
+    page = doc[0]
+    _set_field(page, "tfn", data["tfn"])
+    _set_field(page, "smsf-name", data["fund_name"])
+    _set_field(page, "abn", data["abn"])
 
-    page_three(pdf, data)
-    draw_footer(pdf, 3)
-    pdf.showPage()
+    # Page 2 — Auditor / EFT details
+    page = doc[1]
+    eft = data["eft"]
+    _set_field(page, "ss-bsb", eft["fund_bsb"])
+    _set_field(page, "ss-acc", eft["fund_account"])
+    _set_field(page, "ss-acc-name", eft["fund_account_name"])
+    _set_field(page, "ref-bsb", eft["refund_bsb"])
+    _set_field(page, "ref-acc", eft["refund_account"])
+    _set_field(page, "ref-acc-name", eft["refund_account_name"])
+    _set_field(page, "esa", eft["esa"])
+    aud = data["auditor"]
+    _set_radio(page, "aud-parta-qual", "Yes" if aud["part_a_qualified"] else "No")
+    _set_radio(page, "aud-partb-qual", "Yes" if aud["part_b_qualified"] else "No")
+    _set_radio(page, "aud-partb-qual-yes", "Yes" if aud["part_b_rectified"] else "No")
 
-    page_four(pdf, data)
-    draw_footer(pdf, 4)
-    pdf.showPage()
+    # Page 3 — Status / ECPI
+    page = doc[2]
+    status = data["status"]
+    _set_field(page, "ECPI", status["ecpi_amount"])
+    _set_radio(page, "ecpi-yes/no", "Yes" if status["ecpi_yes"] else "No")
+    if status["ecpi_yes"]:
+        # NOTE: "Seggregated"/"Unsegreggated" are the exact export values defined in the
+        # PDF template (the form itself contains these typos); they must match exactly.
+        pension_val = "Seggregated" if status["ecpi_method"] == "segregated" else "Unsegreggated"
+        _set_radio(page, "pension-method", pension_val)
+        _set_radio(page, "ecpi-other-asses", "Yes")
+    if status["actuarial_certificate"]:
+        _set_radio(page, "act-cert", "Yes")
 
-    page_five(pdf, data)
-    draw_footer(pdf, 5)
-    pdf.showPage()
+    # Page 5 — Deductions (J1/J2 admin expenses)
+    page = doc[4]
+    _set_field(page, "j1-admin-exp", data["deductions"].get("J1", ""))
+    _set_field(page, "j2-admin-exp", data["deductions"].get("J2", ""))
 
-    page_six(pdf, data)
-    draw_footer(pdf, 6)
-    pdf.showPage()
+    # Page 7 — Losses (carry-forward)
+    page = doc[6]
+    _set_field(page, "cfl-tax", data["losses"]["U"])
+    _set_field(page, "cfl-cg", data["losses"]["V"])
 
-    page_seven(pdf, data)
-    draw_footer(pdf, 7)
-    pdf.showPage()
+    # Pages 8–13 — Members 1–6
+    for n in range(1, MAX_MEMBERS + 1):
+        page = doc[7 + (n - 1)]
+        member = data["members"][n - 1] if n <= num_members else None
+        pfx = f"mem{n}"
+        nc_field_suffix = "ncsbis" if n == 1 else "ncdbis"  # mem1 uses ncsbis; mem2-6 use ncdbis
+        _set_field(page, f"{pfx}-ls", member["lump_sum"] if member else "")
+        _set_field(page, f"{pfx}-is", member["income_stream"] if member else "")
+        _set_field(page, f"{pfx}-acc", member["accumulation_balance"] if member else "")
+        _set_field(page, f"{pfx}-{nc_field_suffix}", member["retirement_non_cdbis"] if member else "")
+        _set_field(page, f"{pfx}-cdbis", member["retirement_cdbis"] if member else "")
+        _set_field(page, f"{pfx}-tris", member["tris_count"] if member else "")
+        _set_field(page, f"{pfx}-bal", member["closing_balance"] if member else "")
+        _set_field(page, f"{pfx}-accbal", member["x1"] if member else "")
+        _set_field(page, f"{pfx}-retbal", member["x2"] if member else "")
+        _set_field(page, f"{pfx}-lrba", member["lrba"] if member else "")
 
-    for member_number in range(1, MAX_MEMBERS + 1):
-        page_member(pdf, data, member_number)
-        draw_footer(pdf, 7 + member_number)
-        if member_number != MAX_MEMBERS:
-            pdf.showPage()
+    # Page 20 — Assets
+    page = doc[19]
+    for field_name, value in data["assets"].items():
+        _set_field(page, field_name, value)
 
-    pdf.save()
+    # Page 21 — Liabilities
+    page = doc[20]
+    for field_name, value in data["liabilities"].items():
+        _set_field(page, field_name, value)
+
+    # Page 22 — Declarations
+    page = doc[21]
+    for field_name, value in data["declarations"].items():
+        _set_field(page, field_name, value)
+
+    doc.save(str(output_path), incremental=False, encryption=pymupdf.PDF_ENCRYPT_NONE)
     return data["tfn"]
 
 
@@ -940,7 +670,6 @@ def main():
     output_dir = Path(__file__).resolve().parent / "output"
     output_dir.mkdir(exist_ok=True)
 
-    generated = []
     for members in range(1, MAX_MEMBERS + 1):
         for index in range(1, 3):
             output_path = output_dir / f"smsf_return_{members}members_{index}.pdf"
@@ -948,11 +677,10 @@ def main():
             relative_path = os.path.relpath(output_path, Path(__file__).resolve().parent)
             summary_tfn = "Provided" if tfn_value == "Provided" else "Recorded"
             print(f"Generated: {relative_path}  ({members} members, TFN: {summary_tfn})")
-            generated.append(output_path)
 
     print("\nAll 12 PDFs generated in the 'output' folder.")
-    return generated
 
 
 if __name__ == "__main__":
     main()
+

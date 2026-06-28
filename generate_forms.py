@@ -12,121 +12,72 @@ LEVY_AMOUNTS = (259, 518)
 
 TITLES = ["Mr", "Mrs", "Ms", "Dr", "Miss"]
 FIRST_NAMES = [
-    "James",
-    "Sarah",
-    "Michael",
-    "Emma",
-    "David",
-    "Lisa",
-    "Robert",
-    "Karen",
-    "William",
-    "Jennifer",
-    "John",
-    "Patricia",
-    "Thomas",
-    "Susan",
-    "Mark",
-    "Jessica",
-    "Andrew",
-    "Helen",
-    "Peter",
-    "Catherine",
-    "Paul",
-    "Margaret",
-    "Steven",
-    "Elizabeth",
-    "Brian",
-    "Christine",
-    "Kevin",
-    "Rebecca",
+    "James", "Sarah", "Michael", "Emma", "David", "Lisa", "Robert", "Karen",
+    "William", "Jennifer", "John", "Patricia", "Thomas", "Susan", "Mark",
+    "Jessica", "Andrew", "Helen", "Peter", "Catherine", "Paul", "Margaret",
+    "Steven", "Elizabeth", "Brian", "Christine", "Kevin", "Rebecca",
 ]
 LAST_NAMES = [
-    "Smith",
-    "Johnson",
-    "Williams",
-    "Brown",
-    "Jones",
-    "Miller",
-    "Davis",
-    "Wilson",
-    "Taylor",
-    "Anderson",
-    "Thomas",
-    "Jackson",
-    "White",
-    "Harris",
-    "Martin",
-    "Thompson",
-    "Garcia",
-    "Martinez",
-    "Robinson",
-    "Clark",
-    "Rodriguez",
-    "Lewis",
-    "Lee",
-    "Walker",
-    "Hall",
-    "Allen",
-    "Young",
-    "King",
+    "Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis",
+    "Wilson", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris",
+    "Martin", "Thompson", "Garcia", "Martinez", "Robinson", "Clark",
+    "Rodriguez", "Lewis", "Lee", "Walker", "Hall", "Allen", "Young", "King",
 ]
 PRACTICES = [
-    "ABC Accounting",
-    "Smith & Associates",
-    "Premier Tax Solutions",
-    "Wealth Advisory Group",
-    "Total SMSF Services",
-    "Henderson Partners",
-    "Blue Sky Accounting",
-    "Pinnacle Tax & Super",
-    "Accord Financial",
+    "ABC Accounting", "Smith & Associates", "Premier Tax Solutions",
+    "Wealth Advisory Group", "Total SMSF Services", "Henderson Partners",
+    "Blue Sky Accounting", "Pinnacle Tax & Super", "Accord Financial",
 ]
 BANKS = [
-    "Commonwealth Bank",
-    "ANZ Bank",
-    "Westpac",
-    "NAB",
-    "Macquarie Bank",
-    "Bendigo Bank",
-    "Suncorp Bank",
-    "Bank of Queensland",
+    "Commonwealth Bank", "ANZ Bank", "Westpac", "NAB", "Macquarie Bank",
+    "Bendigo Bank", "Suncorp Bank", "Bank of Queensland",
 ]
 ESA_ALIASES = [
-    "SMSFAUSTRALIA",
-    "BGLSMSF",
-    "CLASSSMSF",
-    "SUPERFUND",
-    "HEFFRON",
-    "MCLOWD",
-    "SIMPLE FUND",
-    "SELFMANAGEDSUPER",
+    "SMSFAUSTRALIA", "BGLSMSF", "CLASSSMSF", "SUPERFUND", "HEFFRON",
+    "MCLOWD", "SIMPLE FUND", "SELFMANAGEDSUPER",
 ]
 STREETS = [
-    "Main Street",
-    "King Street",
-    "High Street",
-    "George Street",
-    "Park Road",
-    "Church Street",
-    "Station Road",
-    "Victoria Avenue",
+    "Main Street", "King Street", "High Street", "George Street",
+    "Park Road", "Church Street", "Station Road", "Victoria Avenue",
 ]
 SUBURBS = [
-    "Sydney",
-    "Melbourne",
-    "Brisbane",
-    "Perth",
-    "Adelaide",
-    "Canberra",
-    "Hobart",
-    "Newcastle",
+    "Sydney", "Melbourne", "Brisbane", "Perth",
+    "Adelaide", "Canberra", "Hobart", "Newcastle",
 ]
 STATES = ["NSW", "VIC", "QLD", "WA", "SA", "ACT", "TAS"]
 
+# Field names that contain monetary/numeric values — these get right-aligned
+NUMERIC_FIELDS = {
+    "tfn", "abn",
+    "ss-bsb", "ss-acc", "ref-bsb", "ref-acc",
+    "ECPI",
+    "j1-admin-exp", "j2-admin-exp",
+    "cfl-tax", "cfl-cg",
+    "mem1-ls", "mem1-is", "mem1-acc", "mem1-ncsbis", "mem1-cdbis", "mem1-tris",
+    "mem1-bal", "mem1-accbal", "mem1-retbal", "mem1-lrba",
+    "mem2-ls", "mem2-is", "mem2-acc", "mem2-ncdbis", "mem2-cdbis", "mem2-tris",
+    "mem2-bal", "mem2-accbal", "mem2-retbal", "mem2-lrba",
+    "mem3-ls", "mem3-is", "mem3-acc", "mem3-ncdbis", "mem3-cdbis", "mem3-tris",
+    "mem3-bal", "mem3-accbal", "mem3-retbal", "mem3-lrba",
+    "mem4-ls", "mem4-is", "mem4-acc", "mem4-ncdbis", "mem4-cdbis", "mem4-tris",
+    "mem4-bal", "mem4-accbal", "mem4-retbal", "mem4-lrba",
+    "mem5-ls", "mem5-is", "mem5-acc", "mem5-ncdbis", "mem5-cdbis", "mem5-tris",
+    "mem5-bal", "mem5-accbal", "mem5-retbal", "mem5-lrba",
+    "mem6-ls", "mem6-is", "mem6-acc", "mem6-ncdbis", "mem6-cdbis", "mem6-tris",
+    "mem6-bal", "mem6-accbal", "mem6-retbal", "mem6-lrba",
+    "15a-a", "15a-b", "15a-c", "15a-d",
+    "15b-e", "15b-f", "15b-g", "15b-h", "15b-i",
+    "15b-j", "15b-j1", "15b-j2", "15b-js", "15b-j4", "15b-j5", "15b-j6", "15b-j7",
+    "15b-k", "15b-l", "15b-m", "15b-0",
+    "15c-n",
+    "Text34", "Text35", "Text36", "Text37", "Text38", "Text39",
+    "15e",
+    "16-v1", "16-v2", "16-v3", "16v", "16w", "16x", "16y", "16z",
+    "trustee-phone", "trustee-corp-abn", "tan-phone", "tan-ref", "tan",
+}
+
 
 def rand_tfn():
-    """Generate an 8 or 9 digit TFN."""
     length = random.choice([8, 9])
     digits = [str(random.randint(0, 9)) for _ in range(length)]
     digits[0] = str(random.randint(1, 9))
@@ -194,10 +145,6 @@ def maybe_numeric(min_value, max_value, *, whole=True, blank_probability=0.35):
         return f"{value:,}", float(value)
     value = round(random.uniform(min_value, max_value), 2)
     return f"{value:,.2f}", value
-
-
-def format_value(text):
-    return str(text) if text is not None else ""
 
 
 def generate_member(index):
@@ -297,29 +244,13 @@ def build_form_data(num_members):
 
     income_values = {}
     income_specs = [
-        ("A", 500, 55000),
-        ("B", 1000, 120000),
-        ("C", 500, 85000),
-        ("X", 0, 10000),
-        ("D1", 500, 25000),
-        ("D", 500, 30000),
-        ("E", 0, 5000),
-        ("F", 0, 40000),
-        ("H", 0, 18000),
-        ("R1", 0, 50000),
-        ("R2", 0, 50000),
-        ("R3", 0, 50000),
-        ("R6", 0, 50000),
-        ("U1", 0, 50000),
-        ("U2", 0, 50000),
-        ("U3", 0, 50000),
-        ("I", 0, 90000),
-        ("J", 0, 80000),
-        ("K", 0, 70000),
-        ("L", 0, 70000),
-        ("M", 0, 70000),
-        ("S", 0, 25000),
-        ("T", 0, 25000),
+        ("A", 500, 55000), ("B", 1000, 120000), ("C", 500, 85000),
+        ("X", 0, 10000), ("D1", 500, 25000), ("D", 500, 30000),
+        ("E", 0, 5000), ("F", 0, 40000), ("H", 0, 18000),
+        ("R1", 0, 50000), ("R2", 0, 50000), ("R3", 0, 50000), ("R6", 0, 50000),
+        ("U1", 0, 50000), ("U2", 0, 50000), ("U3", 0, 50000),
+        ("I", 0, 90000), ("J", 0, 80000), ("K", 0, 70000),
+        ("L", 0, 70000), ("M", 0, 70000), ("S", 0, 25000), ("T", 0, 25000),
     ]
     for code, minimum, maximum in income_specs:
         blank_probability = 0.25 if code in {"B", "C", "I"} else 0.45
@@ -482,34 +413,14 @@ def _rand_asset_amount():
 def _generate_assets():
     a = _rand_asset_amount
     return {
-        "15a-a": a(),
-        "15a-b": a(),
-        "15a-c": a(),
-        "15a-d": a(),
-        "15b-e": a(),
-        "15b-f": a(),
-        "15b-g": a(),
-        "15b-h": a(),
-        "15b-i": a(),
-        "15b-j1": a(),
-        "15b-j2": a(),
-        "15b-js": a(),
-        "15b-j4": a(),
-        "15b-j5": a(),
-        "15b-j6": a(),
-        "15b-j7": a(),
-        "15b-j": a(),
-        "15b-k": a(),
-        "15b-l": a(),
-        "15b-m": a(),
-        "15b-0": a(),
+        "15a-a": a(), "15a-b": a(), "15a-c": a(), "15a-d": a(),
+        "15b-e": a(), "15b-f": a(), "15b-g": a(), "15b-h": a(), "15b-i": a(),
+        "15b-j1": a(), "15b-j2": a(), "15b-js": a(), "15b-j4": a(),
+        "15b-j5": a(), "15b-j6": a(), "15b-j7": a(),
+        "15b-j": a(), "15b-k": a(), "15b-l": a(), "15b-m": a(), "15b-0": a(),
         "15c-n": a(),
-        "Text34": a(),
-        "Text35": a(),
-        "Text36": a(),
-        "Text37": a(),
-        "Text38": a(),
-        "Text39": a(),
+        "Text34": a(), "Text35": a(), "Text36": a(), "Text37": a(),
+        "Text38": a(), "Text39": a(),
         "15e": a(),
     }
 
@@ -553,7 +464,6 @@ def _generate_declarations():
         "tax-agent-family-name": agent_last,
         "tax-agent-first-name": agent_first,
         "tax-agent-other-name": agent_other,
-        # NOTE: "Tax agents practice" is the exact field name defined in the PDF template.
         "Tax agents practice": random.choice(PRACTICES),
         "tan-phone": rand_phone(),
         "tan-ref": f"REF{random.randint(10000, 99999)}",
@@ -561,13 +471,25 @@ def _generate_declarations():
     }
 
 
-def _set_field(page, field_name, value):
-    """Set a text field value on a PDF page."""
+def _set_field(page, field_name, value, numeric=False):
+    """Set a text field value on a PDF page. Right-aligns if numeric=True."""
     for widget in page.widgets():
         if widget.field_name == field_name:
             widget.field_value = str(value) if value is not None else ""
+            if numeric:
+                widget.text_align = 2  # 0=left, 1=centre, 2=right
             widget.update()
             return
+
+
+def _set_numeric(page, field_name, value):
+    """Set a right-aligned numeric/monetary field."""
+    _set_field(page, field_name, value, numeric=True)
+
+
+def _set_text(page, field_name, value):
+    """Set a left-aligned text field."""
+    _set_field(page, field_name, value, numeric=False)
 
 
 def _set_radio(page, field_name, export_value):
@@ -580,27 +502,30 @@ def _set_radio(page, field_name, export_value):
 
 
 def build_pdf(output_path, num_members):
-    template_path = Path(__file__).parent / "SMSFAR 2024-smart form.pdf"
+    template_path = Path(__file__).parent / "SMSFAR 2024-smart form-fields-removed.pdf"
+    if not template_path.exists():
+        # Fallback to original name if cleaned version not present
+        template_path = Path(__file__).parent / "SMSFAR 2024-smart form.pdf"
     data = build_form_data(num_members)
 
     doc = pymupdf.open(str(template_path))
 
     # Page 1 — Fund information
     page = doc[0]
-    _set_field(page, "tfn", data["tfn"])
-    _set_field(page, "smsf-name", data["fund_name"])
-    _set_field(page, "abn", data["abn"])
+    _set_numeric(page, "tfn", data["tfn"])
+    _set_text(page, "smsf-name", data["fund_name"])
+    _set_numeric(page, "abn", data["abn"])
 
     # Page 2 — Auditor / EFT details
     page = doc[1]
     eft = data["eft"]
-    _set_field(page, "ss-bsb", eft["fund_bsb"])
-    _set_field(page, "ss-acc", eft["fund_account"])
-    _set_field(page, "ss-acc-name", eft["fund_account_name"])
-    _set_field(page, "ref-bsb", eft["refund_bsb"])
-    _set_field(page, "ref-acc", eft["refund_account"])
-    _set_field(page, "ref-acc-name", eft["refund_account_name"])
-    _set_field(page, "esa", eft["esa"])
+    _set_numeric(page, "ss-bsb", eft["fund_bsb"])
+    _set_numeric(page, "ss-acc", eft["fund_account"])
+    _set_text(page, "ss-acc-name", eft["fund_account_name"])
+    _set_numeric(page, "ref-bsb", eft["refund_bsb"])
+    _set_numeric(page, "ref-acc", eft["refund_account"])
+    _set_text(page, "ref-acc-name", eft["refund_account_name"])
+    _set_text(page, "esa", eft["esa"])
     aud = data["auditor"]
     _set_radio(page, "aud-parta-qual", "Yes" if aud["part_a_qualified"] else "No")
     _set_radio(page, "aud-partb-qual", "Yes" if aud["part_b_qualified"] else "No")
@@ -609,11 +534,9 @@ def build_pdf(output_path, num_members):
     # Page 3 — Status / ECPI
     page = doc[2]
     status = data["status"]
-    _set_field(page, "ECPI", status["ecpi_amount"])
+    _set_numeric(page, "ECPI", status["ecpi_amount"])
     _set_radio(page, "ecpi-yes/no", "Yes" if status["ecpi_yes"] else "No")
     if status["ecpi_yes"]:
-        # NOTE: "Seggregated"/"Unsegreggated" are the exact export values defined in the
-        # PDF template (the form itself contains these typos); they must match exactly.
         pension_val = "Seggregated" if status["ecpi_method"] == "segregated" else "Unsegreggated"
         _set_radio(page, "pension-method", pension_val)
         _set_radio(page, "ecpi-other-asses", "Yes")
@@ -622,45 +545,49 @@ def build_pdf(output_path, num_members):
 
     # Page 5 — Deductions (J1/J2 admin expenses)
     page = doc[4]
-    _set_field(page, "j1-admin-exp", data["deductions"].get("J1", ""))
-    _set_field(page, "j2-admin-exp", data["deductions"].get("J2", ""))
+    _set_numeric(page, "j1-admin-exp", data["deductions"].get("J1", ""))
+    _set_numeric(page, "j2-admin-exp", data["deductions"].get("J2", ""))
 
     # Page 7 — Losses (carry-forward)
     page = doc[6]
-    _set_field(page, "cfl-tax", data["losses"]["U"])
-    _set_field(page, "cfl-cg", data["losses"]["V"])
+    _set_numeric(page, "cfl-tax", data["losses"]["U"])
+    _set_numeric(page, "cfl-cg", data["losses"]["V"])
 
     # Pages 8–13 — Members 1–6
     for n in range(1, MAX_MEMBERS + 1):
         page = doc[7 + (n - 1)]
         member = data["members"][n - 1] if n <= num_members else None
         pfx = f"mem{n}"
-        nc_field_suffix = "ncsbis" if n == 1 else "ncdbis"  # mem1 uses ncsbis; mem2-6 use ncdbis
-        _set_field(page, f"{pfx}-ls", member["lump_sum"] if member else "")
-        _set_field(page, f"{pfx}-is", member["income_stream"] if member else "")
-        _set_field(page, f"{pfx}-acc", member["accumulation_balance"] if member else "")
-        _set_field(page, f"{pfx}-{nc_field_suffix}", member["retirement_non_cdbis"] if member else "")
-        _set_field(page, f"{pfx}-cdbis", member["retirement_cdbis"] if member else "")
-        _set_field(page, f"{pfx}-tris", member["tris_count"] if member else "")
-        _set_field(page, f"{pfx}-bal", member["closing_balance"] if member else "")
-        _set_field(page, f"{pfx}-accbal", member["x1"] if member else "")
-        _set_field(page, f"{pfx}-retbal", member["x2"] if member else "")
-        _set_field(page, f"{pfx}-lrba", member["lrba"] if member else "")
+        nc_field_suffix = "ncsbis" if n == 1 else "ncdbis"
+        _set_numeric(page, f"{pfx}-ls",               member["lump_sum"] if member else "")
+        _set_numeric(page, f"{pfx}-is",               member["income_stream"] if member else "")
+        _set_numeric(page, f"{pfx}-acc",              member["accumulation_balance"] if member else "")
+        _set_numeric(page, f"{pfx}-{nc_field_suffix}", member["retirement_non_cdbis"] if member else "")
+        _set_numeric(page, f"{pfx}-cdbis",            member["retirement_cdbis"] if member else "")
+        _set_numeric(page, f"{pfx}-tris",             member["tris_count"] if member else "")
+        _set_numeric(page, f"{pfx}-bal",              member["closing_balance"] if member else "")
+        _set_numeric(page, f"{pfx}-accbal",           member["x1"] if member else "")
+        _set_numeric(page, f"{pfx}-retbal",           member["x2"] if member else "")
+        _set_numeric(page, f"{pfx}-lrba",             member["lrba"] if member else "")
 
     # Page 20 — Assets
     page = doc[19]
     for field_name, value in data["assets"].items():
-        _set_field(page, field_name, value)
+        _set_numeric(page, field_name, value)
 
     # Page 21 — Liabilities
     page = doc[20]
     for field_name, value in data["liabilities"].items():
-        _set_field(page, field_name, value)
+        _set_numeric(page, field_name, value)
 
     # Page 22 — Declarations
     page = doc[21]
-    for field_name, value in data["declarations"].items():
-        _set_field(page, field_name, value)
+    decl = data["declarations"]
+    for field_name, value in decl.items():
+        if field_name in {"trustee-phone", "trustee-corp-abn", "tan-phone", "tan-ref", "tan"}:
+            _set_numeric(page, field_name, value)
+        else:
+            _set_text(page, field_name, value)
 
     doc.save(str(output_path), incremental=False, encryption=pymupdf.PDF_ENCRYPT_NONE)
     return data["tfn"]
@@ -683,4 +610,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

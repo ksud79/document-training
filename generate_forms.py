@@ -553,6 +553,7 @@ def _generate_declarations():
         "tax-agent-family-name": agent_last,
         "tax-agent-first-name": agent_first,
         "tax-agent-other-name": agent_other,
+        # NOTE: "Tax agents practice" is the exact field name defined in the PDF template.
         "Tax agents practice": random.choice(PRACTICES),
         "tan-phone": rand_phone(),
         "tan-ref": f"REF{random.randint(10000, 99999)}",
@@ -611,6 +612,8 @@ def build_pdf(output_path, num_members):
     _set_field(page, "ECPI", status["ecpi_amount"])
     _set_radio(page, "ecpi-yes/no", "Yes" if status["ecpi_yes"] else "No")
     if status["ecpi_yes"]:
+        # NOTE: "Seggregated"/"Unsegreggated" are the exact export values defined in the
+        # PDF template (the form itself contains these typos); they must match exactly.
         pension_val = "Seggregated" if status["ecpi_method"] == "segregated" else "Unsegreggated"
         _set_radio(page, "pension-method", pension_val)
         _set_radio(page, "ecpi-other-asses", "Yes")
@@ -632,11 +635,11 @@ def build_pdf(output_path, num_members):
         page = doc[7 + (n - 1)]
         member = data["members"][n - 1] if n <= num_members else None
         pfx = f"mem{n}"
-        ncf = "ncsbis" if n == 1 else "ncdbis"
+        nc_field_suffix = "ncsbis" if n == 1 else "ncdbis"  # mem1 uses ncsbis; mem2-6 use ncdbis
         _set_field(page, f"{pfx}-ls", member["lump_sum"] if member else "")
         _set_field(page, f"{pfx}-is", member["income_stream"] if member else "")
         _set_field(page, f"{pfx}-acc", member["accumulation_balance"] if member else "")
-        _set_field(page, f"{pfx}-{ncf}", member["retirement_non_cdbis"] if member else "")
+        _set_field(page, f"{pfx}-{nc_field_suffix}", member["retirement_non_cdbis"] if member else "")
         _set_field(page, f"{pfx}-cdbis", member["retirement_cdbis"] if member else "")
         _set_field(page, f"{pfx}-tris", member["tris_count"] if member else "")
         _set_field(page, f"{pfx}-bal", member["closing_balance"] if member else "")
